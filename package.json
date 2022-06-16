@@ -1,6 +1,6 @@
 {
   "name": "mono-release",
-  "version": "0.0.0-development",
+  "version": "0.0.0",
   "description": "A tiny monorepo release tool",
   "author": "ArcherGu",
   "license": "MIT",
@@ -11,8 +11,8 @@
     "monorepo",
     "release"
   ],
-  "main": "dist/release.js",
-  "types": "dist/release.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "mono-release": "dist/release.js",
     "mono-publish": "dist/publish.js"
@@ -73,8 +73,5 @@
     "*.{js,ts,tsx,vue,md}": [
       "eslint --fix"
     ]
-  },
-  "mono-release": {
-    "packagesPath": "packages"
   }
 }
