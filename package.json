@@ -1,0 +1,22 @@
+{
+  "name": "mono-release",
+  "version": "0.0.0-development",
+  "description": "A tiny monorepo release tool",
+  "author": "ArcherGu",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/ArcherGu/mono-release.git"
+  },
+  "keywords": [
+    "monorepo",
+    "release"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=14"
+  }
+}
