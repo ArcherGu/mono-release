@@ -1,3 +1,4 @@
+import path from 'path'
 import prompts from 'prompts'
 import semver from 'semver'
 import colors from 'picocolors'
@@ -34,7 +35,9 @@ async function main(): Promise<void> {
 
   await logRecentCommits(pkg)
 
-  const { currentVersion, pkgName, pkgPath, pkgDir } = getPackageInfo(pkg)
+  const { packagesPath = path.join(process.cwd(), 'packages') } = config
+
+  const { currentVersion, pkgName, pkgPath, pkgDir } = getPackageInfo(pkg, packagesPath)
 
   if (!targetVersion) {
     const { release }: { release: string } = await prompts({
@@ -109,7 +112,7 @@ async function main(): Promise<void> {
     return
   }
 
-  step('\nPushing to GitHub...')
+  step('\nPushing...')
   await runIfNotDry('git', ['push'])
   await runIfNotDry('git', ['push', 'origin', `refs/tags/${tag}`])
 

@@ -7,5 +7,5 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: true,
   splitting: true,
-  noExternal: ['execa'],
+  noExternal: ['execa', 'strip-json-comments'],
 })

@@ -1,3 +1,5 @@
+import path from 'path'
+import { resolveConfig } from './config'
 import { args, getPackageInfo, publishPackage, step } from './utils'
 
 async function main() {
@@ -15,7 +17,9 @@ async function main() {
   if (version.startsWith('v'))
     version = version.slice(1)
 
-  const { currentVersion, pkgDir } = getPackageInfo(pkgName)
+  const config = await resolveConfig()
+  const { packagesPath = path.join(process.cwd(), 'packages') } = config
+  const { currentVersion, pkgDir } = getPackageInfo(pkgName, packagesPath)
   if (currentVersion !== version) {
     throw new Error(
       `Package version from tag "${version}" mismatches with current version "${currentVersion}"`,

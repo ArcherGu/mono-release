@@ -31,9 +31,15 @@ export async function getPackages(config: ResolvedReleaseConfig = {}) {
   if (!existsSync(packagesPath))
     throw new Error(`packages dir ${packagesPath} not found`)
 
-  let packages = readdirSync(packagesPath)
-  if (exclude.length > 0)
-    packages = packages.filter(i => !exclude.includes(i))
+  const packages = readdirSync(packagesPath).filter((i) => {
+    if (
+      fs.statSync(path.join(packagesPath, i)).isDirectory()
+      && !exclude.includes(i)
+    )
+      return true
+
+    return false
+  })
 
   if (packages.length === 0)
     throw new Error(`no packages found in ${packagesPath}`)
@@ -41,8 +47,8 @@ export async function getPackages(config: ResolvedReleaseConfig = {}) {
   return packages
 }
 
-export function getPackageInfo(pkgName: string) {
-  const pkgDir = path.resolve(__dirname, `../packages/${pkgName}`)
+export function getPackageInfo(pkgName: string, packagesPath: string) {
+  const pkgDir = path.resolve(packagesPath, pkgName)
 
   if (!existsSync(pkgDir))
     throw new Error(`Package ${pkgName} not found`)

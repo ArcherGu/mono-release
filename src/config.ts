@@ -116,6 +116,9 @@ export async function resolveConfig(cwd?: string): Promise<ResolvedReleaseConfig
     )
     data.changelog = false
   }
+  else {
+    data.changelog = true
+  }
 
   return {
     cwd,
