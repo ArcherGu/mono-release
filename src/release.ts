@@ -21,6 +21,17 @@ import { Rollback } from './rollback'
 const rb = new Rollback()
 
 async function main(): Promise<void> {
+  const { stdout: diffCheck } = await run('git', ['diff'], { stdio: 'pipe' })
+  const { stdout: cacheCheck } = await run('git', ['diff', '--cached'], { stdio: 'pipe' })
+  if (diffCheck || cacheCheck) {
+    console.log(
+      colors.red(
+        'You have uncommited changes. Please commit them first. Exiting...',
+      ),
+    )
+    return
+  }
+
   let targetVersion: string | undefined
 
   const config = await resolveConfig()
@@ -87,17 +98,15 @@ async function main(): Promise<void> {
 
   step('\nUpdating package version...')
 
-  rb.add(
-    updateVersion(pkgPath, targetVersion),
-  )
+  rb.add(async () => {
+    await runIfNotDry('git', ['checkout', '.'], { stdio: 'pipe' })
+    Rollback.printInfo('Rollback: Files change')
+  })
+
+  updateVersion(pkgPath, targetVersion)
 
   if (config.changelog) {
     step('\nGenerating changelog...')
-    rb.add(async () => {
-      await runIfNotDry('git', ['checkout', '--', path.resolve(pkgDir, 'CHANGELOG.md')], { stdio: 'pipe' })
-      Rollback.printInfo('Rollback: CHANGELOG.md')
-    })
-
     const changelogArgs = [
       'conventional-changelog',
       '-p',
@@ -115,6 +124,7 @@ async function main(): Promise<void> {
   const { stdout } = await run('git', ['diff'], { stdio: 'pipe' })
   if (stdout) {
     step('\nCommitting changes...')
+
     await runIfNotDry('git', ['add', '-A'])
     rb.add(async () => {
       await runIfNotDry('git', ['reset', 'HEAD'], { stdio: 'pipe' })

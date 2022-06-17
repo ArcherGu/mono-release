@@ -11,8 +11,6 @@ import semver from 'semver'
 import fs from 'fs-extra'
 import minimist from 'minimist'
 import type { ResolvedReleaseConfig } from './config'
-import type { RollbackFn } from './rollback'
-import { Rollback } from './rollback'
 
 export const args = minimist(process.argv.slice(2))
 
@@ -168,19 +166,10 @@ export function getVersionChoices(currentVersion: string) {
   return versionChoices
 }
 
-export function updateVersion(pkgPath: string, version: string): RollbackFn {
+export function updateVersion(pkgPath: string, version: string) {
   const pkg = fs.readJSONSync(pkgPath)
-  const oldVersion = pkg.version
   pkg.version = version
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
-
-  const rollback = () => {
-    pkg.version = oldVersion
-    writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
-    Rollback.printInfo(`Rollback: version to ${oldVersion}`)
-  }
-
-  return rollback
 }
 
 export async function publishPackage(

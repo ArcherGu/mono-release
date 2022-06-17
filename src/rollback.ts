@@ -9,7 +9,7 @@ export class Rollback {
   }
 
   async rollback() {
-    Rollback.printInfo('Rollbacking...')
+    this.rollbackList.length > 0 && Rollback.printInfo('Rollbacking...')
     for (const fn of this.rollbackList)
       await fn()
   }
