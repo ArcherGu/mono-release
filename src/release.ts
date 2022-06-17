@@ -8,6 +8,7 @@ import {
   getPackages,
   getVersionChoices,
   isDryRun,
+  logLastCommit,
   logRecentCommits,
   run,
   runIfNotDry,
@@ -15,6 +16,9 @@ import {
   updateVersion,
 } from './utils'
 import { resolveConfig } from './config'
+import { Rollback } from './rollback'
+
+const rb = new Rollback()
 
 async function main(): Promise<void> {
   let targetVersion: string | undefined
@@ -33,9 +37,9 @@ async function main(): Promise<void> {
   if (!pkg)
     return
 
-  await logRecentCommits(pkg)
-
   const { packagesPath = path.join(process.cwd(), 'packages') } = config
+
+  await logRecentCommits(pkg, packagesPath)
 
   const { currentVersion, pkgName, pkgPath, pkgDir } = getPackageInfo(pkg, packagesPath)
 
@@ -82,10 +86,18 @@ async function main(): Promise<void> {
     return
 
   step('\nUpdating package version...')
-  updateVersion(pkgPath, targetVersion)
+
+  rb.add(
+    updateVersion(pkgPath, targetVersion),
+  )
 
   if (config.changelog) {
     step('\nGenerating changelog...')
+    rb.add(async () => {
+      await runIfNotDry('git', ['checkout', '--', path.resolve(pkgDir, 'CHANGELOG.md')], { stdio: 'ignore' })
+      Rollback.printInfo('Rollback: CHANGELOG.md')
+    })
+
     const changelogArgs = [
       'conventional-changelog',
       '-p',
@@ -104,8 +116,22 @@ async function main(): Promise<void> {
   if (stdout) {
     step('\nCommitting changes...')
     await runIfNotDry('git', ['add', '-A'])
+    rb.add(async () => {
+      await runIfNotDry('git', ['reset', 'HEAD'], { stdio: 'ignore' })
+      Rollback.printInfo('Rollback: Cancel git add')
+    })
+
     await runIfNotDry('git', ['commit', '-m', `release: ${tag}`])
+    rb.add(async () => {
+      await runIfNotDry('git', ['reset', '--soft', 'HEAD^'])
+      Rollback.printInfo('Rollback: Cancel git commit')
+    })
+
     await runIfNotDry('git', ['tag', tag])
+    rb.add(async () => {
+      await runIfNotDry('git', ['tag', '-d', tag], { stdio: 'ignore' })
+      Rollback.printInfo(`Rollback: Delete tag ${tag}`)
+    })
   }
   else {
     console.log('No changes to commit.')
@@ -113,8 +139,61 @@ async function main(): Promise<void> {
   }
 
   step('\nPushing...')
-  await runIfNotDry('git', ['push'])
-  await runIfNotDry('git', ['push', 'origin', `refs/tags/${tag}`])
+  try {
+    await runIfNotDry('git', ['push'])
+  }
+  catch (err) {
+    console.error(err)
+    console.log()
+    const { yes }: { yes: boolean } = await prompts({
+      type: 'confirm',
+      name: 'yes',
+      message: colors.yellow('Push failed. Rollback?'),
+    })
+
+    if (yes) {
+      await rb.rollback()
+      return
+    }
+    else {
+      console.log(`
+        You can manually run:
+        ${colors.yellow('git push')}
+        ${colors.yellow(`git push origin refs/tags/${tag}`)}
+      `)
+
+      return
+    }
+  }
+
+  try {
+    await runIfNotDry('git', ['push', 'origin', `refs/tags/${tag}`])
+  }
+  catch (err) {
+    console.error(err)
+    console.log()
+    const { yes }: { yes: boolean } = await prompts({
+      type: 'confirm',
+      name: 'yes',
+      message: colors.yellow('Push tag failed, rollback ?'),
+    })
+
+    if (yes) {
+      console.log(colors.cyan('You may need to manually rollback the commit on remote git:'))
+      await logLastCommit()
+
+      await rb.rollback()
+      return
+    }
+    else {
+      console.log(`
+        You can manually run:
+        ${colors.yellow(`git push origin refs/tags/${tag}`)}
+      `)
+
+      return
+    }
+  }
 
   if (isDryRun)
     console.log('\nDry run finished - run git diff to see package changes.')
@@ -122,7 +201,8 @@ async function main(): Promise<void> {
   console.log()
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error(err)
+  await rb.rollback()
   process.exit(1)
 })

@@ -11,6 +11,8 @@ import semver from 'semver'
 import fs from 'fs-extra'
 import minimist from 'minimist'
 import type { ResolvedReleaseConfig } from './config'
+import type { RollbackFn } from './rollback'
+import { Rollback } from './rollback'
 
 export const args = minimist(process.argv.slice(2))
 
@@ -166,10 +168,19 @@ export function getVersionChoices(currentVersion: string) {
   return versionChoices
 }
 
-export function updateVersion(pkgPath: string, version: string): void {
+export function updateVersion(pkgPath: string, version: string): RollbackFn {
   const pkg = fs.readJSONSync(pkgPath)
+  const oldVersion = pkg.version
   pkg.version = version
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
+
+  const rollback = () => {
+    pkg.version = oldVersion
+    writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
+    Rollback.printInfo(`Rollback: version to ${oldVersion}`)
+  }
+
+  return rollback
 }
 
 export async function publishPackage(
@@ -196,7 +207,7 @@ export async function getLatestTag(pkgName: string) {
     .reverse()[0]
 }
 
-export async function logRecentCommits(pkgName: string) {
+export async function logRecentCommits(pkgName: string, pkgPath: string) {
   const tag = await getLatestTag(pkgName)
   if (!tag)
     return
@@ -218,7 +229,21 @@ export async function logRecentCommits(pkgName: string) {
       `${sha}..HEAD`,
       '--oneline',
       '--',
-      `packages/${pkgName}`,
+      `${path.resolve(pkgPath, pkgName)}`,
+    ],
+    { stdio: 'inherit' },
+  )
+  console.log()
+}
+
+export async function logLastCommit() {
+  await run(
+    'git',
+    [
+      '--no-pager',
+      'log',
+      '--oneline',
+      '-1',
     ],
     { stdio: 'inherit' },
   )
