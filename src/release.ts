@@ -94,7 +94,7 @@ async function main(): Promise<void> {
   if (config.changelog) {
     step('\nGenerating changelog...')
     rb.add(async () => {
-      await runIfNotDry('git', ['checkout', '--', path.resolve(pkgDir, 'CHANGELOG.md')], { stdio: 'ignore' })
+      await runIfNotDry('git', ['checkout', '--', path.resolve(pkgDir, 'CHANGELOG.md')], { stdio: 'pipe' })
       Rollback.printInfo('Rollback: CHANGELOG.md')
     })
 
@@ -117,7 +117,7 @@ async function main(): Promise<void> {
     step('\nCommitting changes...')
     await runIfNotDry('git', ['add', '-A'])
     rb.add(async () => {
-      await runIfNotDry('git', ['reset', 'HEAD'], { stdio: 'ignore' })
+      await runIfNotDry('git', ['reset', 'HEAD'], { stdio: 'pipe' })
       Rollback.printInfo('Rollback: Cancel git add')
     })
 
@@ -129,7 +129,7 @@ async function main(): Promise<void> {
 
     await runIfNotDry('git', ['tag', tag])
     rb.add(async () => {
-      await runIfNotDry('git', ['tag', '-d', tag], { stdio: 'ignore' })
+      await runIfNotDry('git', ['tag', '-d', tag], { stdio: 'pipe' })
       Rollback.printInfo(`Rollback: Delete tag ${tag}`)
     })
   }
