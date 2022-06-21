@@ -1,18 +1,17 @@
 import path from 'path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { resolveConfig } from '../src/config'
-import { getPackages } from '../src/utils'
+import { getPackageInfo, getPackages } from '../src/utils'
 import { createMockMonorepo } from './mock'
 
 const MOCK_MONOREPO_NAME = 'mock-monorepo'
+let clearMockMonorepo: () => void
+
+afterEach(() => {
+  clearMockMonorepo?.()
+})
 
 describe('getPackages', async () => {
-  let clearMockMonorepo: () => void
-
-  afterEach(() => {
-    clearMockMonorepo?.()
-  })
-
   it('should return all packages under packages folder if no mono-release config', async () => {
     clearMockMonorepo = await createMockMonorepo({
       name: MOCK_MONOREPO_NAME,
@@ -110,5 +109,29 @@ describe('getPackages', async () => {
     catch (error) {
       expect(error.message.includes('no packages')).toBe(true)
     }
+  })
+})
+
+describe('getPackageInfo', async () => {
+  it('should return correct package info', async () => {
+    clearMockMonorepo = await createMockMonorepo({
+      name: MOCK_MONOREPO_NAME,
+      packagesFolder: 'packages',
+      packages: [
+        {
+          name: 'bar',
+          startVersion: '0.0.1',
+        },
+      ],
+    })
+
+    const packagesPath = path.join(process.cwd(), 'test', MOCK_MONOREPO_NAME, 'packages')
+
+    const { currentVersion, pkgName, pkgPath, pkgDir } = getPackageInfo('bar', packagesPath)
+
+    expect(currentVersion).toBe('0.0.1')
+    expect(pkgName).toBe('bar')
+    expect(pkgPath).toBe(path.join(packagesPath, 'bar', 'package.json'))
+    expect(pkgDir).toBe(path.join(packagesPath, 'bar'))
   })
 })

@@ -62,7 +62,6 @@ export async function createMockMonorepo(opt: MockMonorepoOpt) {
       const pkgJson = {
         name: pkg.name,
         version: pkg.startVersion,
-        private: true,
       }
 
       fs.writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2))
