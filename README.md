@@ -1,6 +1,10 @@
 # Mono Release 📦
 
-A tiny monorepo release tool.
+A tiny monorepo release tool. Much of the code for this tool references [Vite](https://github.com/vitejs/vite)'s [release scripts](https://github.com/vitejs/vite/tree/main/scripts).
+
+## How it works
+
+When you need release a package from monorepo project, you can run this tool to execute a command-line script, which you can select the package that needs to release and select a recommended version. it will automatically generate a commit message about this release, and push this commit. In addition, a tag about this version will also be pushed.
 
 ## Install
 
