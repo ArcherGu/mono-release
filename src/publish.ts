@@ -1,10 +1,9 @@
 import path from 'path'
+import type { InlineConfig } from './config'
 import { resolveConfig } from './config'
-import { args, getPackageInfo, publishPackage, step } from './utils'
+import { getPackageInfo, getRunner, step } from './utils'
 
-async function main() {
-  const tag = args._[0]
-
+export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
   if (!tag)
     throw new Error('No tag specified')
 
@@ -17,8 +16,14 @@ async function main() {
   if (version.startsWith('v'))
     version = version.slice(1)
 
-  const config = await resolveConfig()
-  const { packagesPath = path.join(process.cwd(), 'packages') } = config
+  const config = await resolveConfig(inlineConfig)
+  const {
+    cwd = process.cwd(),
+    packagesPath = path.join(cwd, 'packages'),
+    dry: isDryRun = false,
+  } = config
+  const { runIfNotDry } = getRunner(isDryRun)
+
   const { currentVersion, pkgDir } = getPackageInfo(pkgName, packagesPath)
   if (currentVersion !== version) {
     throw new Error(
@@ -32,10 +37,12 @@ async function main() {
     : version.includes('alpha')
       ? 'alpha'
       : undefined
-  await publishPackage(pkgDir, releaseTag)
-}
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+  const publicArgs = ['publish', '--access', 'public']
+  if (releaseTag)
+    publicArgs.push('--tag', releaseTag)
+
+  await runIfNotDry('npm', publicArgs, {
+    cwd: pkgDir,
+  })
+}

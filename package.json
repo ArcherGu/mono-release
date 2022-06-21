@@ -14,8 +14,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "mono-release": "dist/release.js",
-    "mono-publish": "dist/publish.js"
+    "mor": "dist/cli.js",
+    "mono-release": "dist/cli.js"
   },
   "files": [
     "dist"
@@ -40,12 +40,12 @@
   },
   "dependencies": {
     "bundle-require": "^3.0.4",
+    "cac": "^6.7.12",
     "check-package-exists": "^1.1.0",
     "esbuild": "^0.14.44",
     "execa": "^6.1.0",
     "fs-extra": "^10.1.0",
     "joycon": "^3.1.1",
-    "minimist": "^1.2.6",
     "picocolors": "^1.0.0",
     "prompts": "^2.4.2",
     "semver": "^7.3.7",
@@ -54,7 +54,6 @@
   "devDependencies": {
     "@lightwing/eslint-config": "0.0.2",
     "@types/fs-extra": "9.0.13",
-    "@types/minimist": "1.2.2",
     "@types/node": "18.0.0",
     "@types/prompts": "2.0.14",
     "@types/semver": "7.3.10",

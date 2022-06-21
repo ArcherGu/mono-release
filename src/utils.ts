@@ -9,25 +9,8 @@ import { execa } from 'execa'
 import type { ReleaseType } from 'semver'
 import semver from 'semver'
 import fs from 'fs-extra'
-import minimist from 'minimist'
-import type { ResolvedReleaseConfig } from './config'
 
-export const args = minimist(process.argv.slice(2))
-
-export const isDryRun = !!args.dry // --dry
-
-if (isDryRun) {
-  console.log(colors.inverse(colors.yellow(' DRY RUN ')))
-  console.log()
-}
-
-export async function getPackages(config: ResolvedReleaseConfig = {}) {
-  const {
-    cwd = process.cwd(),
-    packagesPath = path.join(cwd, 'packages'),
-    exclude = [],
-  } = config
-
+export async function getPackages(packagesPath: string, exclude: string[] = []) {
   if (!existsSync(packagesPath))
     throw new Error(`packages dir ${packagesPath} not found`)
 
@@ -75,7 +58,7 @@ export function getPackageInfo(pkgName: string, packagesPath: string) {
   }
 }
 
-export async function run(
+async function run(
   bin: string,
   args: string[],
   opts: ExecaOptions<string> = {},
@@ -83,7 +66,7 @@ export async function run(
   return execa(bin, args, { stdio: 'inherit', ...opts })
 }
 
-export async function dryRun(
+async function dryRun(
   bin: string,
   args: string[],
   opts?: ExecaOptions<string>,
@@ -94,7 +77,18 @@ export async function dryRun(
   )
 }
 
-export const runIfNotDry = isDryRun ? dryRun : run
+export function getRunner(isDryRun: boolean) {
+  if (isDryRun) {
+    console.log(colors.inverse(colors.yellow(' DRY RUN ')))
+    console.log()
+  }
+
+  return {
+    run,
+    dryRun,
+    runIfNotDry: isDryRun ? dryRun : run,
+  }
+}
 
 export function step(msg: string) {
   return console.log(colors.cyan(msg))
@@ -170,19 +164,6 @@ export function updateVersion(pkgPath: string, version: string) {
   const pkg = fs.readJSONSync(pkgPath)
   pkg.version = version
   writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`)
-}
-
-export async function publishPackage(
-  pkdDir: string,
-  tag?: string,
-): Promise<void> {
-  const publicArgs = ['publish', '--access', 'public']
-  if (tag)
-    publicArgs.push('--tag', tag)
-
-  await runIfNotDry('npm', publicArgs, {
-    cwd: pkdDir,
-  })
 }
 
 export async function getLatestTag(pkgName: string) {
