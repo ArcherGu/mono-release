@@ -31,6 +31,11 @@ export interface MonoReleaseConfig {
    * @default false
    */
   dry?: boolean
+  /**
+   * Automatically push to remote after release
+   * @default true
+   */
+  push?: boolean
 }
 
 export interface ResolvedMonoReleaseConfig extends MonoReleaseConfig {
@@ -152,6 +157,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve dry
   if (inlineConfig.dry !== undefined)
     config.dry = inlineConfig.dry
+
+  // resolve push
+  if (inlineConfig.push !== undefined)
+    config.push = inlineConfig.push
 
   return {
     cwd,

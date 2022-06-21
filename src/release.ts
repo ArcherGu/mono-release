@@ -21,6 +21,7 @@ export interface ReleaseOptions {
   package?: string
   changelog?: boolean
   exclude?: string[]
+  push?: boolean
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
@@ -34,6 +35,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       changelog,
       exclude = [],
       dry: isDryRun = false,
+      push: autoPush = true,
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
@@ -167,60 +169,69 @@ export async function release(inlineConfig: InlineConfig = {}) {
       return
     }
 
-    step('\nPushing...')
-    try {
-      await runIfNotDry('git', ['push'])
-    }
-    catch (err) {
-      console.error(err)
-      console.log()
-      const { yes }: { yes: boolean } = await prompts({
-        type: 'confirm',
-        name: 'yes',
-        message: colors.yellow('Push failed. Rollback?'),
-      })
-
-      if (yes) {
-        await rb.rollback()
-        return
-      }
-      else {
-        console.log(`
-        You can manually run:
+    if (!autoPush) {
+      console.log(`
+        Release is done. You can push the changes to remote repository by running:
         ${colors.yellow('git push')}
         ${colors.yellow(`git push origin refs/tags/${tag}`)}
       `)
-
-        return
-      }
     }
-
-    try {
-      await runIfNotDry('git', ['push', 'origin', `refs/tags/${tag}`])
-    }
-    catch (err) {
-      console.error(err)
-      console.log()
-      const { yes }: { yes: boolean } = await prompts({
-        type: 'confirm',
-        name: 'yes',
-        message: colors.yellow('Push tag failed, rollback ?'),
-      })
-
-      if (yes) {
-        console.log(colors.cyan('You may need to manually rollback the commit on remote git:'))
-        await logLastCommit()
-
-        await rb.rollback()
-        return
+    else {
+      step('\nPushing...')
+      try {
+        await runIfNotDry('git', ['push'])
       }
-      else {
-        console.log(`
+      catch (err) {
+        console.error(err)
+        console.log()
+        const { yes }: { yes: boolean } = await prompts({
+          type: 'confirm',
+          name: 'yes',
+          message: colors.yellow('Push failed. Rollback?'),
+        })
+
+        if (yes) {
+          await rb.rollback()
+          return
+        }
+        else {
+          console.log(`
+            You can manually run:
+            ${colors.yellow('git push')}
+            ${colors.yellow(`git push origin refs/tags/${tag}`)}
+          `)
+
+          return
+        }
+      }
+
+      try {
+        await runIfNotDry('git', ['push', 'origin', `refs/tags/${tag}`])
+      }
+      catch (err) {
+        console.error(err)
+        console.log()
+        const { yes }: { yes: boolean } = await prompts({
+          type: 'confirm',
+          name: 'yes',
+          message: colors.yellow('Push tag failed, rollback ?'),
+        })
+
+        if (yes) {
+          console.log(colors.cyan('You may need to manually rollback the commit on remote git:'))
+          await logLastCommit()
+
+          await rb.rollback()
+          return
+        }
+        else {
+          console.log(`
         You can manually run:
         ${colors.yellow(`git push origin refs/tags/${tag}`)}
       `)
 
-        return
+          return
+        }
       }
     }
 
