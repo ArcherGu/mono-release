@@ -1,5 +1,6 @@
+import { readFileSync } from 'fs'
+import { join } from 'path'
 import { cac } from 'cac'
-import { version } from '../package.json'
 import type { ReleaseOptions } from './release'
 
 interface CommonCLIOptions {
@@ -57,6 +58,7 @@ cli.command('publish <pkg@version>', 'Publish package')
   })
 
 cli.help()
-cli.version(version)
+const pkgPath = join(__dirname, '../package.json')
+cli.version(JSON.parse(readFileSync(pkgPath, 'utf8')).version)
 
 cli.parse()
