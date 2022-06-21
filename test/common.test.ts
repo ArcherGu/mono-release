@@ -1,6 +1,5 @@
 import path from 'path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { resolveConfig } from '../src/config'
 import { getPackageInfo, getPackages } from '../src/utils'
 import { createMockMonorepo } from './mock'
 
@@ -12,27 +11,9 @@ afterEach(() => {
 })
 
 describe('getPackages', async () => {
-  it('should return all packages under packages folder if no mono-release config', async () => {
-    clearMockMonorepo = await createMockMonorepo({
-      name: MOCK_MONOREPO_NAME,
-      packagesFolder: 'packages',
-      packages: [
-        'foo',
-        {
-          name: 'bar',
-          startVersion: '0.0.0',
-        },
-      ],
-    })
+  const packagesPath = path.join(process.cwd(), 'test', MOCK_MONOREPO_NAME, 'packages')
 
-    const config = await resolveConfig(path.join(process.cwd(), 'test', MOCK_MONOREPO_NAME))
-    const packages = await getPackages(config)
-
-    expect(packages.includes('foo')).toBe(true)
-    expect(packages.includes('bar')).toBe(true)
-  })
-
-  it('should return mono-release config packages if mono-release config exists', async () => {
+  it('should return all packages under packages folder', async () => {
     clearMockMonorepo = await createMockMonorepo({
       name: MOCK_MONOREPO_NAME,
       packagesFolder: 'packages',
@@ -40,19 +21,15 @@ describe('getPackages', async () => {
         'foo',
         'bar',
       ],
-      releaseConfig: {
-        packagesPath: 'packages',
-      },
     })
 
-    const config = await resolveConfig(path.join(process.cwd(), 'test', MOCK_MONOREPO_NAME))
-    const packages = await getPackages(config)
+    const packages = await getPackages(packagesPath)
 
     expect(packages.includes('foo')).toBe(true)
     expect(packages.includes('bar')).toBe(true)
   })
 
-  it('should exclude packages in mono-release config exclude', async () => {
+  it('should exclude packages if set exclude packages', async () => {
     clearMockMonorepo = await createMockMonorepo({
       name: MOCK_MONOREPO_NAME,
       packagesFolder: 'packages',
@@ -60,35 +37,17 @@ describe('getPackages', async () => {
         'foo',
         'bar',
       ],
-      releaseConfig: {
-        packagesPath: 'packages',
-        exclude: ['bar'],
-      },
     })
 
-    const config = await resolveConfig(path.join(process.cwd(), 'test', MOCK_MONOREPO_NAME))
-    const packages = await getPackages(config)
+    const packages = await getPackages(packagesPath, ['bar'])
 
     expect(packages.includes('foo')).toBe(true)
     expect(packages.includes('bar')).toBe(false)
   })
 
-  it('should throw error if mono-release config packagesPath not exists', async () => {
-    clearMockMonorepo = await createMockMonorepo({
-      name: MOCK_MONOREPO_NAME,
-      packagesFolder: 'packages',
-      packages: [
-        'foo',
-        'bar',
-      ],
-      releaseConfig: {
-        packagesPath: 'packages-not-exists',
-      },
-    })
-
+  it('should throw error if packages path not exists', async () => {
     try {
-      const config = await resolveConfig(path.join(process.cwd(), 'test', MOCK_MONOREPO_NAME))
-      await getPackages(config)
+      await getPackages(path.join(process.cwd(), 'not-exists-packages'))
     }
     catch (error) {
       expect(error.message.includes('not found')).toBe(true)
@@ -103,11 +62,10 @@ describe('getPackages', async () => {
     })
 
     try {
-      const config = await resolveConfig(path.join(process.cwd(), 'test', MOCK_MONOREPO_NAME))
-      await getPackages(config)
+      await getPackages(packagesPath)
     }
     catch (error) {
-      expect(error.message.includes('no packages')).toBe(true)
+      expect(error.message.includes('No packages')).toBe(true)
     }
   })
 })

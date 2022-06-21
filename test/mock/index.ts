@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import type { ReleaseConfig } from '../../src/config'
+import type { MonoReleaseConfig } from '../../src/config'
 
 export interface MockPkg {
   name: string
@@ -11,14 +11,14 @@ export interface MockMonorepoOpt {
   name: string
   packagesFolder: string
   packages: (string | MockPkg)[]
-  releaseConfig?: ReleaseConfig
+  releaseConfig?: MonoReleaseConfig
 }
 
 export async function createMockMonorepo(opt: MockMonorepoOpt) {
   const cwd = path.join(process.cwd(), 'test')
   const monorepoDir = path.join(cwd, opt.name)
   if (fs.existsSync(monorepoDir))
-    throw new Error(`monorepo dir ${monorepoDir} already exists, please remove it first`)
+    throw new Error(`Monorepo dir ${monorepoDir} already exists, please remove it first`)
 
   const clearMockMonorepo = () => {
     if (fs.existsSync(monorepoDir))
@@ -53,7 +53,7 @@ export async function createMockMonorepo(opt: MockMonorepoOpt) {
 
     const names = packages.map(i => i.name)
     if (names.length !== new Set(names).size)
-      throw new Error('duplicate package name')
+      throw new Error('Duplicate package name')
 
     for (const pkg of packages) {
       const pkgDir = path.join(packagesDir, pkg.name)
