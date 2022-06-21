@@ -2,6 +2,7 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
 import type { ReleaseOptions } from './release'
+import { createLogger } from './log'
 
 interface CommonCLIOptions {
   '--'?: string[]
@@ -11,6 +12,7 @@ interface CommonCLIOptions {
 }
 
 const cli = cac('mono-release')
+const logger = createLogger()
 
 cli
   .option('-c, --config <file>', 'Use specified config file')
@@ -36,7 +38,7 @@ cli
       })
     }
     catch (e) {
-      console.error(e)
+      logger.error(e)
       process.exit(1)
     }
   })
@@ -52,7 +54,7 @@ cli.command('publish <pkg@version>', 'Publish package')
       })
     }
     catch (e) {
-      console.error(e)
+      logger.error(e)
       process.exit(1)
     }
   })

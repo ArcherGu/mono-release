@@ -1,9 +1,11 @@
 import path from 'path'
 import type { InlineConfig } from './config'
 import { resolveConfig } from './config'
-import { getPackageInfo, getRunner, step } from './utils'
+import { createLogger } from './log'
+import { getPackageInfo, getRunner } from './utils'
 
 export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
+  const logger = createLogger()
   if (!tag)
     throw new Error('No tag specified')
 
@@ -31,7 +33,7 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     )
   }
 
-  step('Publishing package...')
+  logger.info('Publishing package...')
   const releaseTag = version.includes('beta')
     ? 'beta'
     : version.includes('alpha')

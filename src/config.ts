@@ -4,7 +4,7 @@ import JoyCon from 'joycon'
 import strip from 'strip-json-comments'
 import { bundleRequire } from 'bundle-require'
 import { checkPackageExists } from 'check-package-exists'
-import colors from 'picocolors'
+import { createLogger } from './log'
 
 export interface InlineConfig extends Omit<MonoReleaseConfig, 'packagesPath'> {
   configFile?: string
@@ -78,6 +78,7 @@ async function loadJson(filepath: string) {
  * Resolve mono-release config
  */
 export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = process.cwd()): Promise<ResolvedMonoReleaseConfig> {
+  const logger = createLogger()
   const { configFile } = inlineConfig
   let configPath: string | null = null
 
@@ -139,11 +140,7 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
     config.changelog = inlineConfig.changelog
 
   if (!checkPackageExists('conventional-changelog-cli') && config.changelog !== false) {
-    console.log(
-      colors.yellow(
-        '\n "conventional-changelog-cli" is not installed, changelog will not be generated.\n',
-      ),
-    )
+    logger.warn('\n "conventional-changelog-cli" is not installed, changelog will not be generated.\n')
     config.changelog = false
   }
   else {

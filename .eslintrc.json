@@ -3,7 +3,7 @@
   "overrides": [
     {
       "files": [
-        "src/**/*"
+        "src/log.ts"
       ],
       "rules": {
         "no-console": "off"

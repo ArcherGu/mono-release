@@ -1,7 +1,7 @@
 import path from 'path'
 import prompts from 'prompts'
 import semver from 'semver'
-import colors from 'picocolors'
+import { yellow } from 'colorette'
 import {
   getPackageInfo,
   getPackages,
@@ -9,12 +9,12 @@ import {
   getVersionChoices,
   logLastCommit,
   logRecentCommits,
-  step,
   updateVersion,
 } from './utils'
 import type { InlineConfig } from './config'
 import { resolveConfig } from './config'
 import { Rollback } from './rollback'
+import { createLogger } from './log'
 
 export interface ReleaseOptions {
   p?: string
@@ -25,6 +25,7 @@ export interface ReleaseOptions {
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
+  const logger = createLogger()
   const rb = new Rollback()
   try {
     const config = await resolveConfig(inlineConfig)
@@ -42,26 +43,15 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     const { stdout: diffCheck } = await run('git', ['diff'], { stdio: 'pipe' })
     const { stdout: cacheCheck } = await run('git', ['diff', '--cached'], { stdio: 'pipe' })
-    if (diffCheck || cacheCheck) {
-      console.log(
-        colors.red(
-          'You have uncommited changes. Please commit them first. Exiting...',
-        ),
-      )
-      return
-    }
+    if (diffCheck || cacheCheck)
+      throw new Error('You have uncommited changes. Please commit them first.')
 
     const packages = await getPackages(packagesPath, exclude)
     let pkg: string | undefined
     if (specifiedPackage) {
-      if (!packages.includes(specifiedPackage)) {
-        console.log(
-          colors.red(
-            `Package "${config.package}" is not found in "${colors.green(packagesPath)}". Exiting...`,
-          ),
-        )
-        return
-      }
+      if (!packages.includes(specifiedPackage))
+        throw new Error(`Package "${specifiedPackage}" is not found in ${packagesPath}`)
+
       pkg = specifiedPackage
     }
     else {
@@ -104,30 +94,30 @@ export async function release(inlineConfig: InlineConfig = {}) {
     }
 
     if (!semver.valid(targetVersion))
-      throw new Error(`invalid target version: ${targetVersion}`)
+      throw new Error(`Invalid target version: ${targetVersion}`)
 
     const tag = `${pkgName}@${targetVersion}`
 
     const { yes }: { yes: boolean } = await prompts({
       type: 'confirm',
       name: 'yes',
-      message: `Releasing ${colors.yellow(tag)} Confirm?`,
+      message: `Releasing ${yellow(tag)} Confirm?`,
     })
 
     if (!yes)
       return
 
-    step('\nUpdating package version...')
+    logger.info('\nUpdating package version...')
 
     rb.add(async () => {
       await runIfNotDry('git', ['checkout', '.'], { stdio: 'pipe' })
-      Rollback.printInfo('Rollback: Files change')
+      logger.warn('Rollback: Files change')
     })
 
     updateVersion(pkgPath, targetVersion)
 
     if (changelog) {
-      step('\nGenerating changelog...')
+      logger.info('\nGenerating changelog...')
       const changelogArgs = [
         'conventional-changelog',
         '-p',
@@ -144,50 +134,50 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     const { stdout } = await run('git', ['diff'], { stdio: 'pipe' })
     if (stdout) {
-      step('\nCommitting changes...')
+      logger.info('\nCommitting changes...')
 
       await runIfNotDry('git', ['add', '-A'])
       rb.add(async () => {
         await runIfNotDry('git', ['reset', 'HEAD'], { stdio: 'pipe' })
-        Rollback.printInfo('Rollback: Cancel git add')
+        logger.warn('Rollback: Cancel git add')
       })
 
       await runIfNotDry('git', ['commit', '-m', `release: ${tag}`])
       rb.add(async () => {
         await runIfNotDry('git', ['reset', '--soft', 'HEAD^'])
-        Rollback.printInfo('Rollback: Cancel git commit')
+        logger.warn('Rollback: Cancel git commit')
       })
 
       await runIfNotDry('git', ['tag', tag])
       rb.add(async () => {
         await runIfNotDry('git', ['tag', '-d', tag], { stdio: 'pipe' })
-        Rollback.printInfo(`Rollback: Delete tag ${tag}`)
+        logger.warn(`Rollback: Delete tag ${tag}`)
       })
     }
     else {
-      console.log('No changes to commit.')
+      logger.warn('No changes to commit.')
       return
     }
 
     if (!autoPush) {
-      console.log(`
+      logger.info(`
         Release is done. You can push the changes to remote repository by running:
-        ${colors.yellow('git push')}
-        ${colors.yellow(`git push origin refs/tags/${tag}`)}
+        ${yellow('git push')}
+        ${yellow(`git push origin refs/tags/${tag}`)}
       `)
     }
     else {
-      step('\nPushing...')
+      logger.info('\nPushing...')
       try {
         await runIfNotDry('git', ['push'])
       }
       catch (err) {
-        console.error(err)
-        console.log()
+        logger.error(err)
+        logger.break()
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
           name: 'yes',
-          message: colors.yellow('Push failed. Rollback?'),
+          message: yellow('Push failed. Rollback?'),
         })
 
         if (yes) {
@@ -195,10 +185,10 @@ export async function release(inlineConfig: InlineConfig = {}) {
           return
         }
         else {
-          console.log(`
+          logger.info(`
             You can manually run:
-            ${colors.yellow('git push')}
-            ${colors.yellow(`git push origin refs/tags/${tag}`)}
+            ${yellow('git push')}
+            ${yellow(`git push origin refs/tags/${tag}`)}
           `)
 
           return
@@ -209,26 +199,26 @@ export async function release(inlineConfig: InlineConfig = {}) {
         await runIfNotDry('git', ['push', 'origin', `refs/tags/${tag}`])
       }
       catch (err) {
-        console.error(err)
-        console.log()
+        logger.error(err)
+        logger.break()
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
           name: 'yes',
-          message: colors.yellow('Push tag failed, rollback ?'),
+          message: yellow('Push tag failed, rollback ?'),
         })
 
         if (yes) {
-          console.log(colors.cyan('You may need to manually rollback the commit on remote git:'))
+          logger.warn('You may need to manually rollback the commit on remote git:')
           await logLastCommit()
 
           await rb.rollback()
           return
         }
         else {
-          console.log(`
-        You can manually run:
-        ${colors.yellow(`git push origin refs/tags/${tag}`)}
-      `)
+          logger.info(`
+            You can manually run:
+            ${yellow(`git push origin refs/tags/${tag}`)}
+          `)
 
           return
         }
@@ -236,9 +226,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
     }
 
     if (isDryRun)
-      console.log('\nDry run finished - run git diff to see package changes.')
-
-    console.log()
+      logger.info('\nDry run finished - run git diff to see package changes.')
   }
   catch (error) {
     await rb.rollback()

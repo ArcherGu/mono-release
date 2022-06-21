@@ -42,11 +42,11 @@
     "bundle-require": "^3.0.4",
     "cac": "^6.7.12",
     "check-package-exists": "^1.1.0",
+    "colorette": "^2.0.19",
     "esbuild": "^0.14.44",
     "execa": "^6.1.0",
     "fs-extra": "^10.1.0",
     "joycon": "^3.1.1",
-    "picocolors": "^1.0.0",
     "prompts": "^2.4.2",
     "semver": "^7.3.7",
     "strip-json-comments": "^4.0.0"

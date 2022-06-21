@@ -1,18 +1,21 @@
 /**
- * modified from https://github.com/vuejs/core/blob/master/scripts/release.js
+ * Modified from https://github.com/vuejs/core/blob/master/scripts/release.js
  */
 import { existsSync, readdirSync, writeFileSync } from 'fs'
 import path from 'path'
-import colors from 'picocolors'
+import { blue, bold, gray, green, inverse } from 'colorette'
 import type { Options as ExecaOptions } from 'execa'
 import { execa } from 'execa'
 import type { ReleaseType } from 'semver'
 import semver from 'semver'
 import fs from 'fs-extra'
+import { createLogger } from './log'
+
+const logger = createLogger()
 
 export async function getPackages(packagesPath: string, exclude: string[] = []) {
   if (!existsSync(packagesPath))
-    throw new Error(`packages dir ${packagesPath} not found`)
+    throw new Error(`Packages dir ${packagesPath} not found`)
 
   const packages = readdirSync(packagesPath).filter((i) => {
     if (
@@ -25,7 +28,7 @@ export async function getPackages(packagesPath: string, exclude: string[] = []) 
   })
 
   if (packages.length === 0)
-    throw new Error(`no packages found in ${packagesPath}`)
+    throw new Error(`No packages found in ${packagesPath}`)
 
   return packages
 }
@@ -71,16 +74,16 @@ async function dryRun(
   args: string[],
   opts?: ExecaOptions<string>,
 ) {
-  return console.log(
-    colors.blue(`[dryrun] ${bin} ${args.join(' ')}`),
+  return logger.info(
+    `[dryrun] ${bin} ${args.join(' ')}`,
     opts || '',
   )
 }
 
 export function getRunner(isDryRun: boolean) {
   if (isDryRun) {
-    console.log(colors.inverse(colors.yellow(' DRY RUN ')))
-    console.log()
+    logger.warn(inverse(' DRY RUN '))
+    logger.break()
   }
 
   return {
@@ -88,10 +91,6 @@ export function getRunner(isDryRun: boolean) {
     dryRun,
     runIfNotDry: isDryRun ? dryRun : run,
   }
-}
-
-export function step(msg: string) {
-  return console.log(colors.cyan(msg))
 }
 
 export function getVersionChoices(currentVersion: string) {
@@ -184,11 +183,11 @@ export async function logRecentCommits(pkgName: string, pkgPath: string) {
   const sha = await run('git', ['rev-list', '-n', '1', tag], {
     stdio: 'pipe',
   }).then(res => res.stdout.trim())
-  console.log(
-    colors.bold(
-      `\n${colors.blue('i')} Commits of ${colors.green(
+  logger.log(
+    bold(
+      `\n${inverse(blue(' i '))} Commits of ${green(
         pkgName,
-      )} since ${colors.green(tag)} ${colors.gray(`(${sha.slice(0, 5)})`)}`,
+      )} since ${green(tag)} ${gray(`(${sha.slice(0, 5)})`)}`,
     ),
   )
   await run(
@@ -203,7 +202,7 @@ export async function logRecentCommits(pkgName: string, pkgPath: string) {
     ],
     { stdio: 'inherit' },
   )
-  console.log()
+  logger.break()
 }
 
 export async function logLastCommit() {
@@ -217,5 +216,5 @@ export async function logLastCommit() {
     ],
     { stdio: 'inherit' },
   )
-  console.log()
+  logger.break()
 }

@@ -9,6 +9,7 @@ specifiers:
   bundle-require: ^3.0.4
   cac: ^6.7.12
   check-package-exists: ^1.1.0
+  colorette: ^2.0.19
   conventional-changelog-cli: 2.2.2
   esbuild: ^0.14.44
   eslint: 8.18.0
@@ -16,7 +17,6 @@ specifiers:
   fs-extra: ^10.1.0
   joycon: ^3.1.1
   lint-staged: 13.0.2
-  picocolors: ^1.0.0
   prompts: ^2.4.2
   semver: ^7.3.7
   simple-git-hooks: 2.8.0
@@ -29,11 +29,11 @@ dependencies:
   bundle-require: 3.0.4_esbuild@0.14.44
   cac: 6.7.12
   check-package-exists: 1.1.0
+  colorette: 2.0.19
   esbuild: 0.14.44
   execa: 6.1.0
   fs-extra: 10.1.0
   joycon: 3.1.1
-  picocolors: 1.0.0
   prompts: 2.4.2
   semver: 7.3.7
   strip-json-comments: 4.0.0
@@ -797,7 +797,6 @@ packages:
 
   /colorette/2.0.19:
     resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
-    dev: true
 
   /commander/4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
@@ -2966,6 +2965,7 @@ packages:
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
+    dev: true
 
   /picomatch/2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
