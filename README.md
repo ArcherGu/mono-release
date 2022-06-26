@@ -1,14 +1,19 @@
-# Mono Release 📦
+# Mono Release 🎉
 [![npm](https://img.shields.io/npm/v/mono-release?style=flat-square)](https://npm.im/mono-release) [![npm](https://img.shields.io/npm/dw/mono-release?style=flat-square)](https://npm.im/mono-release) [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ArcherGu/mono-release/CI?style=flat-square)](https://github.com/ArcherGu/mono-release/actions/workflows/ci.yml)
 
+A tiny monorepo release tool.
 
-A tiny monorepo release tool. Much of the code for this tool references [Vite](https://github.com/vitejs/vite)'s [release scripts](https://github.com/vitejs/vite/tree/main/scripts).
+## Features
 
-## How it works
-
-When you need release a package from monorepo project, you can run this tool to execute a command-line script, which you can select the package that needs to release and select a recommended version. It will automatically generate a commit message about this release, and push this commit. In addition, a tag about this version will also be pushed.
-
-***NOTE**: If you have any uncommited changes, you will be prompted to commit them before you run this tool.*
+- ➡️ Select a package to operate
+- 🤖 Automatic version derivation
+- 🔖 Semantic version by [semver](https://npm.im/semver)
+- ✅ Configure via file or command line
+- 🔒 Branch protection
+- 🛞 Rollback protection
+- 📄 Changelog by [conventional-changelog-cli](https://npm.im/conventional-changelog-cli)
+- 📦 Unlimited package manager
+- 📢 Also contains a [publish](https://github.com/ArcherGu/mono-release/blob/main/src/publish.ts) command
 
 ## Install
 
@@ -132,8 +137,13 @@ mono-release --version
 ```
 Print the version.
 
+## How it works
 
+When you need release a package from monorepo project, you can run this tool to execute a command-line script, which you can select the package that needs to release and select a recommended version. It will automatically generate a commit message about this release, and push this commit. In addition, a tag about this version will also be pushed.
 
+ Much of the code for this tool references [Vite](https://github.com/vitejs/vite)'s [release scripts](https://github.com/vitejs/vite/tree/main/scripts). You can observe the details of its release to understand more how it works
+
+***NOTE**: If you have any uncommited changes, you will be prompted to commit them before you run this tool.*
 
 ## License
 
