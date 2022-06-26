@@ -16,7 +16,7 @@ const logger = createLogger()
 
 cli
   .option('-c, --config <file>', 'Use specified config file')
-  .option('--dry', 'Dry run')
+  .option('--dry', 'Dry run, change file but not running any git actions')
 
 cli
   .command('', 'Release package')
