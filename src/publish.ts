@@ -2,7 +2,7 @@ import path from 'path'
 import type { InlineConfig } from './config'
 import { resolveConfig } from './config'
 import { createLogger } from './log'
-import { getPackageInfo, getRunner } from './utils'
+import { branchCheck, getPackageInfo, getRunner } from './utils'
 
 export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
   const logger = createLogger()
@@ -23,8 +23,15 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     cwd = process.cwd(),
     packagesPath = path.join(cwd, 'packages'),
     dry: isDryRun = false,
+    branch = false,
   } = config
   const { runIfNotDry } = getRunner(isDryRun)
+
+  if (branch) {
+    const checkResult = await branchCheck(branch)
+    if (!checkResult)
+      throw new Error(`You are not on branch "${branch}". Please switch to it first.`)
+  }
 
   const { currentVersion, pkgDir } = getPackageInfo(pkgName, packagesPath)
   if (currentVersion !== version) {

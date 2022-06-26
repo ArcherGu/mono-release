@@ -8,6 +8,8 @@ interface CommonCLIOptions {
   '--'?: string[]
   c?: string
   config?: string
+  b?: string
+  branch?: string
   dry?: boolean
 }
 
@@ -16,6 +18,7 @@ const logger = createLogger()
 
 cli
   .option('-c, --config <file>', 'Use specified config file')
+  .option('-b, --branch <name>', 'Use specified branch')
   .option('--dry', 'Dry run, change file but not running any git actions')
 
 cli
@@ -35,6 +38,7 @@ cli
         exclude: options.exclude,
         dry: options.dry,
         push: options.push,
+        branch: options.branch,
       })
     }
     catch (e) {
@@ -51,6 +55,7 @@ cli.command('publish <pkg@version>', 'Publish package')
       await publish(tag, {
         configFile: options.config,
         dry: options.dry,
+        branch: options.branch,
       })
     }
     catch (e) {

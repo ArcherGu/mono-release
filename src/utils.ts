@@ -218,3 +218,8 @@ export async function logLastCommit() {
   )
   logger.break()
 }
+
+export async function branchCheck(branch: string) {
+  const { stdout: currentBranch } = await run('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { stdio: 'pipe' })
+  return currentBranch === branch
+}

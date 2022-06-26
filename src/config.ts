@@ -17,6 +17,11 @@ export interface MonoReleaseConfig {
    * @default 'packages'
    */
   packagesPath?: string
+
+  /**
+   * Allowed branch, if specified, this tool will only work on specified branch, or throw error
+   */
+  branch?: string
   /**
    * exclude packages
    */
@@ -158,6 +163,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve push
   if (inlineConfig.push !== undefined)
     config.push = inlineConfig.push
+
+  // resolve branch
+  if (typeof inlineConfig.branch === 'string' || inlineConfig.branch === false)
+    config.branch = inlineConfig.branch
 
   return {
     cwd,

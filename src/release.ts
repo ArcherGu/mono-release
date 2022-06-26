@@ -3,6 +3,7 @@ import prompts from 'prompts'
 import semver from 'semver'
 import { yellow } from 'colorette'
 import {
+  branchCheck,
   getPackageInfo,
   getPackages,
   getRunner,
@@ -37,6 +38,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       exclude = [],
       dry: isDryRun = false,
       push: autoPush = true,
+      branch = false,
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
@@ -45,6 +47,12 @@ export async function release(inlineConfig: InlineConfig = {}) {
     const { stdout: cacheCheck } = await run('git', ['diff', '--cached'], { stdio: 'pipe' })
     if (diffCheck || cacheCheck)
       throw new Error('You have uncommited changes. Please commit them first.')
+
+    if (branch) {
+      const checkResult = await branchCheck(branch)
+      if (!checkResult)
+        throw new Error(`You are not on branch "${branch}". Please switch to it first.`)
+    }
 
     const packages = await getPackages(packagesPath, exclude)
     let pkg: string | undefined
