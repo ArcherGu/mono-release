@@ -20,6 +20,8 @@ yarn add mono-release -D
 pnpm add mono-release -D
 ```
 
+**NOTE**: You may need to add `-W` flag to install it in a monorepo workspace.
+
 ## Usage
 
 Use directly: 
