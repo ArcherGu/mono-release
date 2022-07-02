@@ -26,7 +26,7 @@ cli
   .alias('release')
   .option('-p, --package <name>', 'Package which will be released')
   .option('--changelog', 'Generate changelog')
-  .option('--exclude <name>', 'Excludes specified packages')
+  .option('--exclude <names>', 'Excludes specified packages')
   .option('--push', 'Auto push to remote after release')
   .action(async (options: ReleaseOptions & CommonCLIOptions) => {
     const { release } = await import('./release')
