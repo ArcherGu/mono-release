@@ -24,7 +24,7 @@ cli
 cli
   .command('', 'Release package')
   .alias('release')
-  .option('-p, --package <name>', 'Package which will be released')
+  .option('-p, --specified-package <name>', 'Specified package which will be released, skip selector, ignore `exclude`')
   .option('--changelog', 'Generate changelog')
   .option('--exclude <names>', 'Excludes specified packages')
   .option('--push', 'Auto push to remote after release')
@@ -33,7 +33,7 @@ cli
     try {
       await release({
         configFile: options.config,
-        package: options.package,
+        specifiedPackage: options.specifiedPackage,
         changelog: options.changelog,
         exclude: options.exclude,
         dry: options.dry,

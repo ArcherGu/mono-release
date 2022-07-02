@@ -88,12 +88,12 @@ mono-release --config mono-release.config.ts
 ```
 Use specified config file.
 
-### package
+### specified package
 
 ```shell
-mono-release --package pkg-name
+mono-release --specified-package pkg-name
 ```
-Specify the package to release.
+Specified package which will be released, skip selector, ignore `exclude`.
 
 ### changelog
 

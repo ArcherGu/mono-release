@@ -19,7 +19,7 @@ import { createLogger } from './log'
 
 export interface ReleaseOptions {
   p?: string
-  package?: string
+  specifiedPackage?: string
   changelog?: boolean
   exclude?: string[]
   push?: boolean
@@ -33,7 +33,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
     const {
       cwd = process.cwd(),
       packagesPath = path.join(cwd, 'packages'),
-      package: specifiedPackage,
+      specifiedPackage,
       changelog,
       exclude = [],
       dry: isDryRun = false,
@@ -54,15 +54,17 @@ export async function release(inlineConfig: InlineConfig = {}) {
         throw new Error(`You are not on branch "${branch}". Please switch to it first.`)
     }
 
-    const packages = await getPackages(packagesPath, exclude)
     let pkg: string | undefined
     if (specifiedPackage) {
+      // specifiedPackage will ignore `exclude`
+      const packages = await getPackages(packagesPath)
       if (!packages.includes(specifiedPackage))
         throw new Error(`Package "${specifiedPackage}" is not found in ${packagesPath}`)
 
       pkg = specifiedPackage
     }
     else {
+      const packages = await getPackages(packagesPath, exclude)
       const { pkg: pkgTemp }: { pkg: string } = await prompts({
         type: 'select',
         name: 'pkg',

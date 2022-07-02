@@ -8,7 +8,7 @@ import { createLogger } from './log'
 
 export interface InlineConfig extends Omit<MonoReleaseConfig, 'packagesPath'> {
   configFile?: string
-  package?: string
+  specifiedPackage?: string
 }
 
 export interface MonoReleaseConfig {
@@ -45,7 +45,7 @@ export interface MonoReleaseConfig {
 
 export interface ResolvedMonoReleaseConfig extends MonoReleaseConfig {
   cwd?: string
-  package?: string
+  specifiedPackage?: string
 }
 
 export type MonoReleaseConfigExport = MonoReleaseConfig | Promise<MonoReleaseConfig>
@@ -170,7 +170,7 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
 
   return {
     cwd,
-    package: inlineConfig.package,
+    specifiedPackage: inlineConfig.specifiedPackage,
     ...config,
   }
 }
