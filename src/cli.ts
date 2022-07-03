@@ -26,6 +26,7 @@ cli
   .alias('release')
   .option('-p, --specified-package <name>', 'Specified package which will be released, skip selector, ignore `exclude`')
   .option('--changelog', 'Generate changelog')
+  .option('--include <names>', 'Include specified packages, `exclude` will override it')
   .option('--exclude <names>', 'Excludes specified packages')
   .option('--push', 'Auto push to remote after release')
   .action(async (options: ReleaseOptions & CommonCLIOptions) => {
@@ -35,7 +36,8 @@ cli
         configFile: options.config,
         specifiedPackage: options.specifiedPackage,
         changelog: options.changelog,
-        exclude: options.exclude,
+        include: options.include?.split(','),
+        exclude: options.exclude?.split(','),
         dry: options.dry,
         push: options.push,
         branch: options.branch,

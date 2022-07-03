@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import type { MonoReleaseConfig } from '../../src/config'
+import type { UserConfig } from '../../src/config'
 
 export interface MockPkg {
   name: string
@@ -11,7 +11,7 @@ export interface MockMonorepoOpt {
   name: string
   packagesFolder: string
   packages: (string | MockPkg)[]
-  releaseConfig?: MonoReleaseConfig
+  releaseConfig?: UserConfig
 }
 
 export async function createMockMonorepo(opt: MockMonorepoOpt) {

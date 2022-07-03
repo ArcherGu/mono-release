@@ -21,7 +21,8 @@ export interface ReleaseOptions {
   p?: string
   specifiedPackage?: string
   changelog?: boolean
-  exclude?: string[]
+  include?: string // string,string,...
+  exclude?: string // string,string,...
   push?: boolean
 }
 
@@ -35,6 +36,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       packagesPath = path.join(cwd, 'packages'),
       specifiedPackage,
       changelog,
+      include = [],
       exclude = [],
       dry: isDryRun = false,
       push: autoPush = true,
@@ -64,7 +66,9 @@ export async function release(inlineConfig: InlineConfig = {}) {
       pkg = specifiedPackage
     }
     else {
-      const packages = await getPackages(packagesPath, exclude)
+      let packages = await getPackages(packagesPath, exclude)
+      packages = include.length > 0 ? packages.filter(p => include.includes(p)) : packages
+
       const { pkg: pkgTemp }: { pkg: string } = await prompts({
         type: 'select',
         name: 'pkg',

@@ -6,22 +6,26 @@ import { bundleRequire } from 'bundle-require'
 import { checkPackageExists } from 'check-package-exists'
 import { createLogger } from './log'
 
-export interface InlineConfig extends Omit<MonoReleaseConfig, 'packagesPath'> {
+export interface InlineConfig extends Omit<UserConfig, 'packagesPath'> {
   configFile?: string
   specifiedPackage?: string
 }
 
-export interface MonoReleaseConfig {
+export interface UserConfig {
   /**
    * monorepo packages path
    * @default 'packages'
    */
   packagesPath?: string
-
   /**
    * Allowed branch, if specified, this tool will only work on specified branch, or throw error
    */
   branch?: string
+  /**
+   * include packages, if specified, this tool will only work on specified packages
+   * @note `exclude` will override `include`
+   */
+  include?: string[]
   /**
    * exclude packages
    */
@@ -43,12 +47,12 @@ export interface MonoReleaseConfig {
   push?: boolean
 }
 
-export interface ResolvedMonoReleaseConfig extends MonoReleaseConfig {
+export interface ResolvedUserConfig extends UserConfig {
   cwd?: string
   specifiedPackage?: string
 }
 
-export type MonoReleaseConfigExport = MonoReleaseConfig | Promise<MonoReleaseConfig>
+export type UserConfigExport = UserConfig | Promise<UserConfig>
 
 function jsoncParse(data: string) {
   try {
@@ -82,7 +86,7 @@ async function loadJson(filepath: string) {
 /**
  * Resolve mono-release config
  */
-export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = process.cwd()): Promise<ResolvedMonoReleaseConfig> {
+export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = process.cwd()): Promise<ResolvedUserConfig> {
   const logger = createLogger()
   const { configFile } = inlineConfig
   let configPath: string | null = null
@@ -112,7 +116,7 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
     })
   }
 
-  let config: MonoReleaseConfig = {}
+  let config: UserConfig = {}
   if (configPath) {
     if (configPath.endsWith('.json')) {
       const jsonCfg = await loadJson(configPath)
@@ -152,9 +156,11 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
     config.changelog = true
   }
 
+  // resolve include
+  config.include = inlineConfig.include ?? config.include ?? []
+
   // resolve exclude
-  if (inlineConfig.exclude)
-    config.exclude = inlineConfig.exclude
+  config.exclude = inlineConfig.exclude ?? config.exclude ?? []
 
   // resolve dry
   if (inlineConfig.dry !== undefined)
@@ -178,6 +184,6 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
 /**
  * Type helper to make it easier to use mono-release.config.ts
  */
-export function defineConfig(config: MonoReleaseConfigExport): MonoReleaseConfigExport {
+export function defineConfig(config: UserConfigExport): UserConfigExport {
   return config
 }
