@@ -102,6 +102,12 @@ mono-release --changelog=false
 ```
 Whether to generate changelog.
 
+### include
+```
+mono-release --include pkg1,pkg2,pkg3
+```
+Include packages, if specified, this tool will only work on specified packages, `exclude` will override `include`.
+
 ### exclude
 
 ```shell
