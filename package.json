@@ -52,7 +52,7 @@
     "strip-json-comments": "^4.0.0"
   },
   "devDependencies": {
-    "@lightwing/eslint-config": "0.0.2",
+    "@lightwing/eslint-config": "0.0.3",
     "@types/fs-extra": "9.0.13",
     "@types/node": "18.0.0",
     "@types/prompts": "2.0.14",
