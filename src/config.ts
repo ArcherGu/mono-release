@@ -46,7 +46,8 @@ export interface UserConfig {
    */
   push?: boolean
   /**
-   * Commit check, warning: If disabled, you may lose all uncommited changes
+   * Commit check
+   * @warning If disabled, you may lose all uncommited changes when rollback.
    * @default true
    */
   commitCheck?: boolean

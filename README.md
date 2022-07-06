@@ -77,7 +77,6 @@ export default defineConfig({
   push: true
 })
 ```
-**NOTE**: You need to install [conventional-changelog-cli](https://npm.im/conventional-changelog-cli) to generate changelog.
 
 ## CLI Options
 
@@ -98,9 +97,12 @@ Specified package which will be released, skip selector, ignore `exclude`.
 ### changelog
 
 ```shell
-mono-release --changelog=false
+mono-release --changelog
+# Or disabled
+mono-release --no-changelog
 ```
 Whether to generate changelog.
+**NOTE**: You need to install [conventional-changelog-cli](https://npm.im/conventional-changelog-cli) to generate changelog.
 
 ### include
 ```
@@ -125,9 +127,21 @@ Dry run. (default: `false`)
 ### push
 
 ```shell
-mono-release --push=false
+mono-release --push
+# Or disabled
+mono-release --no-push
 ```
 Automatically push the commit and tag after release. (default: `true`)
+
+### commit check
+
+```shell
+mono-release --commit-check
+# Or disabled
+mono-release --no-commit-check
+```
+Whether to check commit before release. (default: `true`)
+**WARNING**: If disabled, you may lose all uncommited changes when rollback.
 
 ### help
 
@@ -148,8 +162,6 @@ Print the version.
 When you need release a package from monorepo project, you can run this tool to execute a command-line script, which you can select the package that needs to release and select a recommended version. It will automatically generate a commit message about this release, and push this commit. In addition, a tag about this version will also be pushed.
 
  Much of the code for this tool references [Vite](https://github.com/vitejs/vite)'s [release scripts](https://github.com/vitejs/vite/tree/main/scripts). You can observe the details of its release to understand more how it works
-
-***NOTE**: If you have any uncommited changes, you will be prompted to commit them before you run this tool.*
 
 ## License
 
