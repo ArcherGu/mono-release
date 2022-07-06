@@ -24,6 +24,7 @@ export interface ReleaseOptions {
   include?: string // string,string,...
   exclude?: string // string,string,...
   push?: boolean
+  commitCheck?: boolean
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
@@ -41,14 +42,20 @@ export async function release(inlineConfig: InlineConfig = {}) {
       dry: isDryRun = false,
       push: autoPush = true,
       branch = false,
+      commitCheck = true,
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
 
-    const { stdout: diffCheck } = await run('git', ['diff'], { stdio: 'pipe' })
-    const { stdout: cacheCheck } = await run('git', ['diff', '--cached'], { stdio: 'pipe' })
-    if (diffCheck || cacheCheck)
-      throw new Error('You have uncommited changes. Please commit them first.')
+    if (commitCheck) {
+      const { stdout: diffCheck } = await run('git', ['diff'], { stdio: 'pipe' })
+      const { stdout: cacheCheck } = await run('git', ['diff', '--cached'], { stdio: 'pipe' })
+      if (diffCheck || cacheCheck)
+        throw new Error('You have uncommited changes. Please commit them first.')
+    }
+    else {
+      logger.warn('\nCommit check is disabled. This may cause you to lose all uncommited changes.\n')
+    }
 
     if (branch) {
       const checkResult = await branchCheck(branch)

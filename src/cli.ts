@@ -29,6 +29,8 @@ cli
   .option('--include <names>', 'Include specified packages, `exclude` will override it')
   .option('--exclude <names>', 'Excludes specified packages')
   .option('--push', 'Auto push to remote after release')
+  .option('--commit-check', 'Commit check, you should commit all uncommited changes before release')
+  .option('--no-commit-check', 'Disable commit check, warning: this may cause you to lose all uncommited changes')
   .action(async (options: ReleaseOptions & CommonCLIOptions) => {
     const { release } = await import('./release')
     try {
@@ -41,6 +43,7 @@ cli
         dry: options.dry,
         push: options.push,
         branch: options.branch,
+        commitCheck: options.commitCheck,
       })
     }
     catch (e) {

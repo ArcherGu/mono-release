@@ -45,6 +45,11 @@ export interface UserConfig {
    * @default true
    */
   push?: boolean
+  /**
+   * Commit check, warning: If disabled, you may lose all uncommited changes
+   * @default true
+   */
+  commitCheck?: boolean
 }
 
 export interface ResolvedUserConfig extends UserConfig {
@@ -173,6 +178,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve branch
   if (typeof inlineConfig.branch === 'string' || inlineConfig.branch === false)
     config.branch = inlineConfig.branch
+
+  // resolve commitCheck
+  if (inlineConfig.commitCheck !== undefined)
+    config.commitCheck = inlineConfig.commitCheck
 
   return {
     cwd,
