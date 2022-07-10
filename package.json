@@ -1,6 +1,7 @@
 {
   "name": "mono-release",
   "version": "0.0.0",
+  "packageManager": "pnpm@7.5.0",
   "description": "A tiny monorepo release tool",
   "author": "ArcherGu",
   "license": "MIT",
@@ -69,7 +70,7 @@
     "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts,tsx,vue,md}": [
+    "*.{js,ts,tsx,vue,md,json,yml}": [
       "eslint --fix"
     ]
   }
