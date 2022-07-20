@@ -119,6 +119,13 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     const tag = `${pkgName}@${targetVersion}`
 
+    const { msg }: { msg: string } = await prompts({
+      type: 'text',
+      name: 'msg',
+      message: 'Commit message: ',
+      format: (value: string) => value.trim(),
+    })
+
     const { yes }: { yes: boolean } = await prompts({
       type: 'confirm',
       name: 'yes',
@@ -163,7 +170,8 @@ export async function release(inlineConfig: InlineConfig = {}) {
         logger.warn('Rollback: Cancel git add')
       })
 
-      await runIfNotDry('git', ['commit', '-m', `release: ${tag}`])
+      const commitMsg = `release: ${tag}${msg ? `\n\n${msg}` : ''}`
+      await runIfNotDry('git', ['commit', '-m', commitMsg])
       rb.add(async () => {
         await runIfNotDry('git', ['reset', '--soft', 'HEAD^'])
         logger.warn('Rollback: Cancel git commit')
