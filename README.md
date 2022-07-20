@@ -25,7 +25,7 @@ yarn add mono-release -D
 pnpm add mono-release -D
 ```
 
-> **NOTE**: You may need to add `-W` flag to install it in a monorepo workspace.
+> **Note**: You may need to add `-W` flag to install it in a monorepo workspace.
 
 ## Usage
 
@@ -102,7 +102,7 @@ mono-release --changelog
 mono-release --no-changelog
 ```
 Whether to generate changelog.
-> **NOTE**: You need to install [conventional-changelog-cli](https://npm.im/conventional-changelog-cli) to generate changelog.
+> **Note**: You need to install [conventional-changelog-cli](https://npm.im/conventional-changelog-cli) to generate changelog.
 
 ### include
 ```
@@ -141,7 +141,7 @@ mono-release --commit-check
 mono-release --no-commit-check
 ```
 Whether to check commit before release. (default: `true`)
-> **WARNING**: If disabled, you may lose all uncommited changes when rollback.
+> **Warning**: If disabled, you may lose all uncommited changes when rollback.
 
 ### specified package manager
 
