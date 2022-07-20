@@ -6,6 +6,8 @@ import { bundleRequire } from 'bundle-require'
 import { checkPackageExists } from 'check-package-exists'
 import { createLogger } from './log'
 
+export type PackageManager = 'npm' | 'yarn' | 'pnpm'
+
 export interface InlineConfig extends Omit<UserConfig, 'packagesPath'> {
   configFile?: string
   specifiedPackage?: string
@@ -51,6 +53,11 @@ export interface UserConfig {
    * @default true
    */
   commitCheck?: boolean
+  /**
+   * Package manager to publish
+   * @default 'npm'
+   */
+  packageManager?: PackageManager
 }
 
 export interface ResolvedUserConfig extends UserConfig {
@@ -183,6 +190,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve commitCheck
   if (inlineConfig.commitCheck !== undefined)
     config.commitCheck = inlineConfig.commitCheck
+
+  // resolve packageManager
+  if (inlineConfig.packageManager && ['npm', 'yarn', 'pnpm'].includes(inlineConfig.packageManager))
+    config.packageManager = inlineConfig.packageManager
 
   return {
     cwd,

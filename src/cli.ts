@@ -3,6 +3,7 @@ import { join } from 'path'
 import { cac } from 'cac'
 import type { ReleaseOptions } from './release'
 import { createLogger } from './log'
+import type { PublishOptions } from './publish'
 
 interface CommonCLIOptions {
   '--'?: string[]
@@ -56,13 +57,15 @@ cli
 
 cli.command('publish <pkg@version>', 'Publish package')
   .option('<pkg@version>', 'Package with version, must be in format <pkg>@<version>')
-  .action(async (tag: string, options: CommonCLIOptions) => {
+  .option('-u, --use <PackageManager>', 'Use specified package manager to publish', { default: 'npm' })
+  .action(async (tag: string, options: PublishOptions & CommonCLIOptions) => {
     const { publish } = await import('./publish')
     try {
       await publish(tag, {
         configFile: options.config,
         dry: options.dry,
         branch: options.branch,
+        packageManager: options.use,
       })
     }
     catch (e) {

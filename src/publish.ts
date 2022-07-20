@@ -1,8 +1,13 @@
 import path from 'path'
-import type { InlineConfig } from './config'
+import type { InlineConfig, PackageManager } from './config'
 import { resolveConfig } from './config'
 import { createLogger } from './log'
 import { branchCheck, getPackageInfo, getRunner } from './utils'
+
+export interface PublishOptions {
+  u?: PackageManager
+  use?: PackageManager
+}
 
 export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
   const logger = createLogger()
@@ -24,6 +29,7 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     packagesPath = path.join(cwd, 'packages'),
     dry: isDryRun = false,
     branch = false,
+    packageManager = 'npm',
   } = config
   const { runIfNotDry } = getRunner(isDryRun)
 
@@ -48,10 +54,19 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
       : undefined
 
   const publicArgs = ['publish', '--access', 'public']
+
+  // special handling for package manager
+  if (packageManager === 'yarn')
+    publicArgs.push('--new-version', version)
+
+  else if (packageManager === 'pnpm')
+    publicArgs.push('--no-git-checks')
+
   if (releaseTag)
     publicArgs.push('--tag', releaseTag)
 
-  await runIfNotDry('npm', publicArgs, {
+  logger.info(`Use package manager: ${packageManager}`)
+  await runIfNotDry(packageManager, publicArgs, {
     cwd: pkgDir,
   })
 }
