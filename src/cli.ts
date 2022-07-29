@@ -60,6 +60,7 @@ cli
 cli.command('publish <pkg@version>', 'Publish package')
   .option('<pkg@version>', 'Package with version, must be in format <pkg>@<version>')
   .option('-u, --use <PackageManager>', 'Use specified package manager to publish', { default: 'npm' })
+  .option('--before-publish <command>', 'Run command before publish')
   .action(async (tag: string, options: PublishOptions & CommonCLIOptions) => {
     const { publish } = await import('./publish')
     try {
@@ -68,6 +69,7 @@ cli.command('publish <pkg@version>', 'Publish package')
         dry: options.dry,
         branch: options.branch,
         packageManager: options.use,
+        beforePublish: options.beforePublish,
       })
     }
     catch (e) {

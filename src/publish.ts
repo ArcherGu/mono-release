@@ -7,6 +7,7 @@ import { branchCheck, getPackageInfo, getRunner } from './utils'
 export interface PublishOptions {
   u?: PackageManager
   use?: PackageManager
+  beforePublish?: string
 }
 
 export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
@@ -30,8 +31,9 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     dry: isDryRun = false,
     branch = false,
     packageManager = 'npm',
+    beforePublish,
   } = config
-  const { runIfNotDry } = getRunner(isDryRun)
+  const { run, runIfNotDry } = getRunner(isDryRun)
 
   if (branch) {
     const checkResult = await branchCheck(branch)
@@ -44,6 +46,22 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     throw new Error(
       `Package version from tag "${version}" mismatches with current version "${currentVersion}"`,
     )
+  }
+
+  // run before publish
+  if (beforePublish)
+    logger.info('\nRunning before publish...')
+
+  if (typeof beforePublish === 'string') {
+    // default cwd is package dir
+    await run(beforePublish, [], { cwd: pkgDir })
+  }
+  else if (typeof beforePublish === 'function') {
+    await beforePublish(pkgName, currentVersion)
+  }
+  else if (typeof beforePublish === 'object') {
+    const { command, cwd } = beforePublish
+    await run(command, [], { cwd })
   }
 
   logger.info('Publishing package...')

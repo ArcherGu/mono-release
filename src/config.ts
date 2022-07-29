@@ -62,6 +62,11 @@ export interface UserConfig {
    * You can specify command/function to be executed before release
    */
   beforeRelease?: string | ((pkgName: string, targetVersion: string) => Promise<void>) | { command: string; cwd: string }
+  /**
+   * You can specify command/function to be executed before publish
+   * @Note the default cwd is the package directory when running before publish command
+   */
+  beforePublish?: string | ((pkgName: string, version: string) => Promise<void>) | { command: string; cwd: string }
 }
 
 export interface ResolvedUserConfig extends UserConfig {
@@ -202,6 +207,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve beforeRelease
   if (inlineConfig.beforeRelease)
     config.beforeRelease = inlineConfig.beforeRelease
+
+  // resolve beforePublish
+  if (inlineConfig.beforePublish)
+    config.beforePublish = inlineConfig.beforePublish
 
   return {
     cwd,
