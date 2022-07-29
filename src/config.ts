@@ -58,6 +58,10 @@ export interface UserConfig {
    * @default 'npm'
    */
   packageManager?: PackageManager
+  /**
+   * You can specify command/function to be executed before release
+   */
+  beforeRelease?: string | ((pkgName: string, targetVersion: string) => Promise<void>) | { command: string; cwd: string }
 }
 
 export interface ResolvedUserConfig extends UserConfig {
@@ -194,6 +198,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve packageManager
   if (inlineConfig.packageManager && ['npm', 'yarn', 'pnpm'].includes(inlineConfig.packageManager))
     config.packageManager = inlineConfig.packageManager
+
+  // resolve beforeRelease
+  if (inlineConfig.beforeRelease)
+    config.beforeRelease = inlineConfig.beforeRelease
 
   return {
     cwd,

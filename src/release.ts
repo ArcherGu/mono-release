@@ -25,6 +25,7 @@ export interface ReleaseOptions {
   exclude?: string // string,string,...
   push?: boolean
   commitCheck?: boolean
+  beforeRelease?: string
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
@@ -43,6 +44,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       push: autoPush = true,
       branch = false,
       commitCheck = true,
+      beforeRelease,
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
@@ -135,13 +137,27 @@ export async function release(inlineConfig: InlineConfig = {}) {
     if (!yes)
       return
 
-    logger.info('\nUpdating package version...')
-
     rb.add(async () => {
       await runIfNotDry('git', ['checkout', '.'], { stdio: 'pipe' })
       logger.warn('Rollback: Files change')
     })
 
+    // run before release
+    if (beforeRelease)
+      logger.info('\nRunning before release...')
+
+    if (typeof beforeRelease === 'string') {
+      await run(beforeRelease, [])
+    }
+    else if (typeof beforeRelease === 'function') {
+      await beforeRelease(pkgName, targetVersion)
+    }
+    else if (typeof beforeRelease === 'object') {
+      const { command, cwd } = beforeRelease
+      await run(command, [], { cwd })
+    }
+
+    logger.info('\nUpdating package version...')
     updateVersion(pkgPath, targetVersion)
 
     if (changelog) {

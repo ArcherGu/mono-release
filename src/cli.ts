@@ -34,6 +34,7 @@ cli
   .option('--no-push', 'Disable auto push to remote after release')
   .option('--commit-check', 'Commit check, you should commit all uncommited changes before release')
   .option('--no-commit-check', 'Disable commit check, warning: this may cause you to lose all uncommited changes when rollback')
+  .option('--before-release <command>', 'Run command before release')
   .action(async (options: ReleaseOptions & CommonCLIOptions) => {
     const { release } = await import('./release')
     try {
@@ -47,6 +48,7 @@ cli
         push: options.push,
         branch: options.branch,
         commitCheck: options.commitCheck,
+        beforeRelease: options.beforeRelease,
       })
     }
     catch (e) {
