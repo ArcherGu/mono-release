@@ -143,13 +143,29 @@ mono-release --no-commit-check
 Whether to check commit before release. (default: `true`)
 > **Warning**: If disabled, you may lose all uncommited changes when rollback.
 
+### before release
+
+```shell
+mono-release --before-release "npm run test"
+```
+You can specify command to be executed before release.
+
 ### specified package manager
 
 ```shell
-mono-release --use pnpm
+mono-release publish --use pnpm
 ```
 Use specified package manager for publishing. (default: `npm`)
 > **Note**: Some packages may depend on other packages under the same monorepo, and publishing with a specific package manager can handle these relationships automatically. (eg, [pnpm workspace protocol](https://pnpm.io/workspaces#workspace-protocol-workspace))
+
+### before publish
+
+```shell
+mono-release publish --before-publish "npm run test"
+```
+You can specify command to be executed before publish.
+
+> **Note**: The default cwd is the package directory when running before publish command
 
 ### help
 
