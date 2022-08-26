@@ -9,7 +9,7 @@ import { execa } from 'execa'
 import type { ReleaseType } from 'semver'
 import semver from 'semver'
 import fs from 'fs-extra'
-import { createLogger } from './log'
+import { TAG, createLogger } from './log'
 
 const logger = createLogger()
 
@@ -75,6 +75,7 @@ async function dryRun(
   opts?: ExecaOptions<string>,
 ) {
   return logger.info(
+    TAG,
     `[dryrun] ${bin} ${args.join(' ')}`,
     opts || '',
   )
@@ -82,7 +83,7 @@ async function dryRun(
 
 export function getRunner(isDryRun: boolean) {
   if (isDryRun) {
-    logger.warn(inverse(' DRY RUN '))
+    logger.warn(TAG, inverse(' DRY RUN '))
     logger.break()
   }
 
@@ -183,12 +184,9 @@ export async function logRecentCommits(pkgName: string, pkgPath: string) {
   const sha = await run('git', ['rev-list', '-n', '1', tag], {
     stdio: 'pipe',
   }).then(res => res.stdout.trim())
-  logger.log(
-    bold(
-      `\n${inverse(blue(' i '))} Commits of ${green(
-        pkgName,
-      )} since ${green(tag)} ${gray(`(${sha.slice(0, 5)})`)}`,
-    ),
+  logger.info(
+    pkgName,
+    bold(`${inverse(blue(' i '))} Commits of ${green(pkgName)} since ${green(tag)} ${gray(`(${sha.slice(0, 5)})`)}`),
   )
   await run(
     'git',

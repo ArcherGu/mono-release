@@ -4,7 +4,7 @@ import JoyCon from 'joycon'
 import strip from 'strip-json-comments'
 import { bundleRequire } from 'bundle-require'
 import { checkPackageExists } from 'check-package-exists'
-import { createLogger } from './log'
+import { TAG, createLogger } from './log'
 
 export type PackageManager = 'npm' | 'yarn' | 'pnpm'
 
@@ -114,8 +114,7 @@ async function loadJson(filepath: string) {
   catch (error) {
     if (error instanceof Error) {
       throw new TypeError(
-        `Failed to parse ${path.relative(process.cwd(), filepath)}: ${error.message
-        }`,
+        `Failed to parse ${path.relative(process.cwd(), filepath)}: ${error.message}`,
       )
     }
     else {
@@ -190,7 +189,7 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
     config.changelog = inlineConfig.changelog
 
   if (!checkPackageExists('conventional-changelog-cli') && config.changelog !== false) {
-    logger.warn('\n "conventional-changelog-cli" is not installed, changelog will not be generated.\n')
+    logger.warn(TAG, '"conventional-changelog-cli" is not installed, changelog will not be generated.\n')
     config.changelog = false
   }
   else {

@@ -1,9 +1,12 @@
-// Modified from https://github.com/egoist/tsup/blob/main/src/log.ts
+// Borrowed from https://github.com/egoist/tsup/blob/main/src/log.ts
 import * as colors from 'colorette'
 
 type LOG_TYPE = 'info' | 'success' | 'error' | 'warn'
 
-export const colorize = (type: LOG_TYPE, data: any) => {
+export const colorize = (type: LOG_TYPE, data: any, onlyImportant = false) => {
+  if (onlyImportant && (type === 'info' || type === 'success'))
+    return data
+
   const color
     = type === 'info'
       ? 'blue'
@@ -15,47 +18,64 @@ export const colorize = (type: LOG_TYPE, data: any) => {
   return colors[color](data)
 }
 
+export const makeLabel = (
+  name: string | undefined,
+  input: string,
+) => {
+  return [
+    name && `${colors.dim('[')}${name.toUpperCase()}${colors.dim(']')}`,
+    `[${colors.green(input)}]`,
+  ]
+    .filter(Boolean)
+    .join(' ')
+}
+
 export type Logger = ReturnType<typeof createLogger>
 
-export const createLogger = () => {
+export const TAG = 'MOR'
+
+export const createLogger = (name?: string) => {
   return {
-    success(...args: any[]) {
-      return this.print('success', ...args)
+    setName(_name: string) {
+      name = _name
     },
 
-    info(...args: any[]) {
-      return this.print('info', ...args)
+    success(label: string, ...args: any[]) {
+      return this.log(label, 'success', ...args)
     },
 
-    error(...args: any[]) {
-      return this.print('error', ...args)
+    info(label: string, ...args: any[]) {
+      return this.log(label, 'info', ...args)
     },
 
-    warn(...args: any[]) {
-      return this.print('warn', ...args)
+    error(label: string, ...args: any[]) {
+      return this.log(label, 'error', ...args)
     },
 
-    log(...args: any[]) {
-      console.log(...args)
+    warn(label: string, ...args: any[]) {
+      return this.log(label, 'warn', ...args)
     },
 
     break() {
       console.log('\n')
     },
 
-    print(
+    log(
+      label: string,
       type: 'info' | 'success' | 'error' | 'warn',
       ...data: unknown[]
     ) {
       switch (type) {
         case 'error': {
-          return console.log(
-            ...data.map(item => colorize(type, item)),
+          return console.error(
+            makeLabel(name, label),
+            ...data.map(item => colorize(type, item, true)),
           )
         }
         default:
           console.log(
-            ...data.map(item => colorize(type, item)),
+            makeLabel(name, label),
+            ...data.map(item => colorize(type, item, true)),
           )
       }
     },

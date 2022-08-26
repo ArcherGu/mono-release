@@ -2,7 +2,7 @@ import { readFileSync } from 'fs'
 import { join } from 'path'
 import { cac } from 'cac'
 import type { ReleaseOptions } from './release'
-import { createLogger } from './log'
+import { TAG, createLogger } from './log'
 import type { PublishOptions } from './publish'
 
 interface CommonCLIOptions {
@@ -54,7 +54,7 @@ cli
       })
     }
     catch (e) {
-      logger.error(e)
+      logger.error(TAG, e)
       process.exit(1)
     }
   })
@@ -75,7 +75,7 @@ cli.command('publish <pkg@version>', 'Publish package')
       })
     }
     catch (e) {
-      logger.error(e)
+      logger.error(TAG, e)
       process.exit(1)
     }
   })

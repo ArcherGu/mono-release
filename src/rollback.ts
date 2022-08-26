@@ -1,5 +1,5 @@
 import type { Logger } from './log'
-import { createLogger } from './log'
+import { TAG, createLogger } from './log'
 
 export type RollbackFn = () => (Promise<void> | void)
 
@@ -16,7 +16,7 @@ export class Rollback {
   }
 
   async rollback() {
-    this.rollbackList.length > 0 && this.logger.warn('Rollbacking...')
+    this.rollbackList.length > 0 && this.logger.warn(TAG, 'Rollbacking...')
     for (const fn of this.rollbackList)
       await fn()
   }

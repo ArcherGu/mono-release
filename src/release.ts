@@ -15,7 +15,7 @@ import {
 import type { InlineConfig } from './config'
 import { resolveConfig } from './config'
 import { Rollback } from './rollback'
-import { createLogger } from './log'
+import { TAG, createLogger } from './log'
 
 export interface ReleaseOptions {
   p?: string
@@ -59,7 +59,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
         throw new Error('You have uncommited changes. Please commit them first.')
     }
     else {
-      logger.warn('\nCommit check is disabled. This may cause you to lose all uncommited changes.\n')
+      logger.warn(TAG, 'Commit check is disabled. This may cause you to lose all uncommited changes.\n')
     }
 
     if (branch) {
@@ -142,12 +142,12 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     rb.add(async () => {
       await runIfNotDry('git', ['checkout', '.'], { stdio: 'pipe' })
-      logger.warn(`[${green(pkgName)}] Rollback: Files change`)
+      logger.warn(pkgName, 'Rollback: Files change')
     })
 
     // run before release
     if (beforeRelease)
-      logger.info(`\n[${green(pkgName)}] Running before release...`)
+      logger.info(pkgName, 'Running before release...')
 
     if (typeof beforeRelease === 'string') {
       await run(beforeRelease, [])
@@ -160,11 +160,11 @@ export async function release(inlineConfig: InlineConfig = {}) {
       await run(command, [], { cwd })
     }
 
-    logger.info(`\n[${green(pkgName)}] Updating package version...`)
+    logger.info(pkgName, 'Updating package version...')
     updateVersion(pkgPath, targetVersion)
 
     if (changelog) {
-      logger.info(`\n[${green(pkgName)}] Generating changelog...`)
+      logger.info(pkgName, 'Generating changelog...')
       const changelogArgs = [
         'conventional-changelog',
         '-p',
@@ -181,46 +181,46 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     const { stdout } = await run('git', ['diff'], { stdio: 'pipe' })
     if (stdout) {
-      logger.info(`\n[${green(pkgName)}] Committing changes...`)
+      logger.info(pkgName, 'Committing changes...')
 
       await runIfNotDry('git', ['add', '-A'])
       rb.add(async () => {
         await runIfNotDry('git', ['reset', 'HEAD'], { stdio: 'pipe' })
-        logger.warn('Rollback: Cancel git add')
+        logger.warn(pkgName, 'Rollback: Cancel git add')
       })
 
       const commitMsg = `release: ${tag}${msg ? `\n\n${msg}` : ''}`
       await runIfNotDry('git', ['commit', '-m', commitMsg])
       rb.add(async () => {
         await runIfNotDry('git', ['reset', '--soft', 'HEAD^'])
-        logger.warn(`[${green(pkgName)}] Rollback: Cancel git commit`)
+        logger.warn(pkgName, 'Rollback: Cancel git commit')
       })
 
       await runIfNotDry('git', ['tag', tag])
       rb.add(async () => {
         await runIfNotDry('git', ['tag', '-d', tag], { stdio: 'pipe' })
-        logger.warn(`[${green(pkgName)}] Rollback: Delete tag ${tag}`)
+        logger.warn(pkgName, `Rollback: Delete tag ${tag}`)
       })
     }
     else {
-      logger.warn(`[${green(pkgName)}] No changes to commit.`)
+      logger.warn(pkgName, 'No changes to commit.')
       return
     }
 
     if (!autoPush) {
-      logger.info(`
-        [${green(pkgName)}] Release is done. You can push the changes to remote repository by running:
+      logger.info(pkgName, `
+        Release is done. You can push the changes to remote repository by running:
         ${yellow('git push')}
         ${yellow(`git push origin refs/tags/${tag}`)}
       `)
     }
     else {
-      logger.info(`\n[${green(pkgName)}] Pushing...`)
+      logger.info(pkgName, 'Pushing...')
       try {
         await runIfNotDry('git', ['push'])
       }
       catch (err) {
-        logger.error(err)
+        logger.error(pkgName, err)
         logger.break()
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
@@ -233,8 +233,8 @@ export async function release(inlineConfig: InlineConfig = {}) {
           return
         }
         else {
-          logger.info(`
-            [${green(pkgName)}] You can manually run:
+          logger.info(pkgName, `
+            You can manually run:
             ${yellow('git push')}
             ${yellow(`git push origin refs/tags/${tag}`)}
           `)
@@ -247,7 +247,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
         await runIfNotDry('git', ['push', 'origin', `refs/tags/${tag}`])
       }
       catch (err) {
-        logger.error(err)
+        logger.error(pkgName, err)
         logger.break()
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
@@ -256,15 +256,15 @@ export async function release(inlineConfig: InlineConfig = {}) {
         })
 
         if (yes) {
-          logger.warn(`[${green(pkgName)}] You may need to manually rollback the commit on remote git:`)
+          logger.warn(pkgName, 'You may need to manually rollback the commit on remote git:')
           await logLastCommit()
 
           await rb.rollback()
           return
         }
         else {
-          logger.info(`
-           [${green(pkgName)}] You can manually run:
+          logger.info(pkgName, `
+            You can manually run:
             ${yellow(`git push origin refs/tags/${tag}`)}
           `)
 
@@ -274,7 +274,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
     }
 
     if (isDryRun) {
-      logger.info(`\n[${green(pkgName)}] Dry run finished - run git diff to see package changes.`)
+      logger.info(pkgName, 'Dry run finished - run git diff to see package changes.')
     }
     else if (
       !disableRelationship

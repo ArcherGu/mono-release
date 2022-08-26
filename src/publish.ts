@@ -42,15 +42,12 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
   }
 
   const { currentVersion, pkgDir } = getPackageInfo(pkgName, packagesPath)
-  if (currentVersion !== version) {
-    throw new Error(
-      `Package version from tag "${version}" mismatches with current version "${currentVersion}"`,
-    )
-  }
+  if (currentVersion !== version)
+    throw new Error(`Package version from tag "${version}" mismatches with current version "${currentVersion}"`)
 
   // run before publish
   if (beforePublish)
-    logger.info('\nRunning before publish...')
+    logger.info(pkgName, 'Running before publish...')
 
   if (typeof beforePublish === 'string') {
     // default cwd is package dir
@@ -64,7 +61,7 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     await run(command, [], { cwd })
   }
 
-  logger.info('Publishing package...')
+  logger.info(pkgName, 'Publishing package...')
   const releaseTag = version.includes('beta')
     ? 'beta'
     : version.includes('alpha')
@@ -83,7 +80,7 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
   if (releaseTag)
     publicArgs.push('--tag', releaseTag)
 
-  logger.info(`Use package manager: ${packageManager}`)
+  logger.info(pkgName, `Use package manager: ${packageManager}`)
   await runIfNotDry(packageManager, publicArgs, {
     cwd: pkgDir,
   })
