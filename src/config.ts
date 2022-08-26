@@ -8,6 +8,17 @@ import { createLogger } from './log'
 
 export type PackageManager = 'npm' | 'yarn' | 'pnpm'
 
+export interface RelationshipOpt {
+  /**
+   * Package's names
+   */
+  pkgs: string[]
+  /**
+   * dependent package
+   */
+  base: string
+}
+
 export interface InlineConfig extends Omit<UserConfig, 'packagesPath'> {
   configFile?: string
   specifiedPackage?: string
@@ -67,6 +78,14 @@ export interface UserConfig {
    * @Note the default cwd is the package directory when running before publish command
    */
   beforePublish?: string | ((pkgName: string, version: string) => Promise<void>) | { command: string; cwd: string }
+  /**
+   * Dependencies relationship, when the base package is released, the upper-level packages can also be released
+   */
+  relationships?: RelationshipOpt[]
+  /**
+   * Disable relationship release
+   */
+  disableRelationship?: boolean
 }
 
 export interface ResolvedUserConfig extends UserConfig {

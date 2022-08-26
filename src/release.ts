@@ -1,7 +1,7 @@
 import path from 'path'
 import prompts from 'prompts'
 import semver from 'semver'
-import { yellow } from 'colorette'
+import { green, yellow } from 'colorette'
 import {
   branchCheck,
   getPackageInfo,
@@ -26,6 +26,7 @@ export interface ReleaseOptions {
   push?: boolean
   commitCheck?: boolean
   beforeRelease?: string
+  disableRelationship?: boolean
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
@@ -45,6 +46,8 @@ export async function release(inlineConfig: InlineConfig = {}) {
       branch = false,
       commitCheck = true,
       beforeRelease,
+      relationships = [],
+      disableRelationship = false,
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
@@ -96,42 +99,42 @@ export async function release(inlineConfig: InlineConfig = {}) {
     const { currentVersion, pkgName, pkgPath, pkgDir } = getPackageInfo(pkg, packagesPath)
 
     let targetVersion: string | undefined
-    const { release }: { release: string } = await prompts({
+    const { releaseType }: { releaseType: string } = await prompts({
       type: 'select',
-      name: 'release',
-      message: 'Select release type',
+      name: 'releaseType',
+      message: `[${green(pkgName)}] Select release type`,
       choices: getVersionChoices(currentVersion),
     })
 
-    if (release === 'custom') {
+    if (releaseType === 'custom') {
       const res: { version: string } = await prompts({
         type: 'text',
         name: 'version',
-        message: 'Input custom version',
+        message: `[${green(pkgName)}] Input custom version`,
         initial: currentVersion,
       })
       targetVersion = res.version
     }
     else {
-      targetVersion = release
+      targetVersion = releaseType
     }
 
     if (!semver.valid(targetVersion))
-      throw new Error(`Invalid target version: ${targetVersion}`)
+      throw new Error(`[${green(pkgName)}] Invalid target version: ${targetVersion}`)
 
     const tag = `${pkgName}@${targetVersion}`
 
     const { msg }: { msg: string } = await prompts({
       type: 'text',
       name: 'msg',
-      message: 'Commit message: ',
+      message: `[${green(pkgName)}] Commit message: `,
       format: (value: string) => value.trim(),
     })
 
     const { yes }: { yes: boolean } = await prompts({
       type: 'confirm',
       name: 'yes',
-      message: `Releasing ${yellow(tag)} Confirm?`,
+      message: `[${green(pkgName)}] Releasing ${yellow(tag)} Confirm?`,
     })
 
     if (!yes)
@@ -139,12 +142,12 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     rb.add(async () => {
       await runIfNotDry('git', ['checkout', '.'], { stdio: 'pipe' })
-      logger.warn('Rollback: Files change')
+      logger.warn(`[${green(pkgName)}] Rollback: Files change`)
     })
 
     // run before release
     if (beforeRelease)
-      logger.info('\nRunning before release...')
+      logger.info(`\n[${green(pkgName)}] Running before release...`)
 
     if (typeof beforeRelease === 'string') {
       await run(beforeRelease, [])
@@ -157,11 +160,11 @@ export async function release(inlineConfig: InlineConfig = {}) {
       await run(command, [], { cwd })
     }
 
-    logger.info('\nUpdating package version...')
+    logger.info(`\n[${green(pkgName)}] Updating package version...`)
     updateVersion(pkgPath, targetVersion)
 
     if (changelog) {
-      logger.info('\nGenerating changelog...')
+      logger.info(`\n[${green(pkgName)}] Generating changelog...`)
       const changelogArgs = [
         'conventional-changelog',
         '-p',
@@ -178,7 +181,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     const { stdout } = await run('git', ['diff'], { stdio: 'pipe' })
     if (stdout) {
-      logger.info('\nCommitting changes...')
+      logger.info(`\n[${green(pkgName)}] Committing changes...`)
 
       await runIfNotDry('git', ['add', '-A'])
       rb.add(async () => {
@@ -190,29 +193,29 @@ export async function release(inlineConfig: InlineConfig = {}) {
       await runIfNotDry('git', ['commit', '-m', commitMsg])
       rb.add(async () => {
         await runIfNotDry('git', ['reset', '--soft', 'HEAD^'])
-        logger.warn('Rollback: Cancel git commit')
+        logger.warn(`[${green(pkgName)}] Rollback: Cancel git commit`)
       })
 
       await runIfNotDry('git', ['tag', tag])
       rb.add(async () => {
         await runIfNotDry('git', ['tag', '-d', tag], { stdio: 'pipe' })
-        logger.warn(`Rollback: Delete tag ${tag}`)
+        logger.warn(`[${green(pkgName)}] Rollback: Delete tag ${tag}`)
       })
     }
     else {
-      logger.warn('No changes to commit.')
+      logger.warn(`[${green(pkgName)}] No changes to commit.`)
       return
     }
 
     if (!autoPush) {
       logger.info(`
-        Release is done. You can push the changes to remote repository by running:
+        [${green(pkgName)}] Release is done. You can push the changes to remote repository by running:
         ${yellow('git push')}
         ${yellow(`git push origin refs/tags/${tag}`)}
       `)
     }
     else {
-      logger.info('\nPushing...')
+      logger.info(`\n[${green(pkgName)}] Pushing...`)
       try {
         await runIfNotDry('git', ['push'])
       }
@@ -222,7 +225,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
           name: 'yes',
-          message: yellow('Push failed. Rollback?'),
+          message: `[${green(pkgName)}] ${yellow('Push failed. Rollback?')}`,
         })
 
         if (yes) {
@@ -231,7 +234,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
         }
         else {
           logger.info(`
-            You can manually run:
+            [${green(pkgName)}] You can manually run:
             ${yellow('git push')}
             ${yellow(`git push origin refs/tags/${tag}`)}
           `)
@@ -249,11 +252,11 @@ export async function release(inlineConfig: InlineConfig = {}) {
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
           name: 'yes',
-          message: yellow('Push tag failed, rollback ?'),
+          message: `[${green(pkgName)}] ${yellow('Push tag failed, rollback ?')}`,
         })
 
         if (yes) {
-          logger.warn('You may need to manually rollback the commit on remote git:')
+          logger.warn(`[${green(pkgName)}] You may need to manually rollback the commit on remote git:`)
           await logLastCommit()
 
           await rb.rollback()
@@ -261,7 +264,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
         }
         else {
           logger.info(`
-            You can manually run:
+           [${green(pkgName)}] You can manually run:
             ${yellow(`git push origin refs/tags/${tag}`)}
           `)
 
@@ -270,8 +273,45 @@ export async function release(inlineConfig: InlineConfig = {}) {
       }
     }
 
-    if (isDryRun)
-      logger.info('\nDry run finished - run git diff to see package changes.')
+    if (isDryRun) {
+      logger.info(`\n[${green(pkgName)}] Dry run finished - run git diff to see package changes.`)
+    }
+    else if (
+      !disableRelationship
+      && relationships && Array.isArray(relationships)
+      && autoPush
+    ) {
+      const validRelationships = relationships.filter(r => r.base === pkg)
+      if (validRelationships.length === 0)
+        return
+
+      let depPkgs = validRelationships.reduce<string[]>((p, c) => [...p, ...c.pkgs], [])
+      depPkgs = Array.from(new Set(depPkgs))
+
+      const { yes }: { yes: boolean } = await prompts({
+        type: 'confirm',
+        name: 'yes',
+        message: `\n\nSome upper-level packages depend on [${green(pkgName)}], do you want to release them?`,
+      })
+
+      if (!yes)
+        return
+
+      const { selectedPkgs }: { selectedPkgs: string[] } = await prompts({
+        type: 'multiselect',
+        name: 'selectedPkgs',
+        message: '\nSelect upper-level packages',
+        choices: depPkgs.map(p => ({ value: p, title: p })),
+      })
+
+      for (const selectedPkg of selectedPkgs) {
+        await release({
+          ...inlineConfig,
+          specifiedPackage: selectedPkg,
+          disableRelationship: true,
+        })
+      }
+    }
   }
   catch (error) {
     await rb.rollback()
