@@ -21,7 +21,7 @@ specifiers:
   semver: ^7.3.7
   simple-git-hooks: 2.8.0
   strip-json-comments: ^5.0.0
-  tsup: 6.2.2
+  tsup: 6.2.3
   typescript: 4.8.2
   vitest: 0.22.1
 
@@ -48,7 +48,7 @@ devDependencies:
   eslint: 8.22.0
   lint-staged: 13.0.3
   simple-git-hooks: 2.8.0
-  tsup: 6.2.2_typescript@4.8.2
+  tsup: 6.2.3_typescript@4.8.2
   typescript: 4.8.2
   vitest: 0.22.1
 
@@ -650,8 +650,8 @@ packages:
       load-tsconfig: 0.2.3
     dev: false
 
-  /bundle-require/3.0.4_esbuild@0.15.1:
-    resolution: {integrity: sha512-VXG6epB1yrLAvWVQpl92qF347/UXmncQj7J3U8kZEbdVZ1ZkQyr4hYeL/9RvcE8vVVdp53dY78Fd/3pqfRqI1A==}
+  /bundle-require/3.1.0_esbuild@0.15.1:
+    resolution: {integrity: sha512-IIXtAO7fKcwPHNPt9kY/WNVJqy7NDy6YqJvv6ENH0TOZoJ+yjpEsn1w40WKZbR2ibfu5g1rfgJTvmFHpm5aOMA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     peerDependencies:
       esbuild: '>=0.13'
@@ -4138,8 +4138,8 @@ packages:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
     dev: true
 
-  /tsup/6.2.2_typescript@4.8.2:
-    resolution: {integrity: sha512-vJ9IAdif4GKAz2XMZzjX1hNqhBezJWXjm0qeQEoI7y//a64cxgCF8178eTMV4jBu7YNKnfAPpPSuyXW4mN+9rA==}
+  /tsup/6.2.3_typescript@4.8.2:
+    resolution: {integrity: sha512-J5Pu2Dx0E1wlpIEsVFv9ryzP1pZ1OYsJ2cBHZ7GrKteytNdzaSz5hmLX7/nAxtypq+jVkVvA79d7S83ETgHQ5w==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
@@ -4154,7 +4154,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      bundle-require: 3.0.4_esbuild@0.15.1
+      bundle-require: 3.1.0_esbuild@0.15.1
       cac: 6.7.12
       chokidar: 3.5.3
       debug: 4.3.4
