@@ -27,6 +27,7 @@ export interface ReleaseOptions {
   commitCheck?: boolean
   beforeRelease?: string
   disableRelationship?: boolean
+  commitMessagePlaceholder?: string
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
@@ -48,6 +49,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       beforeRelease,
       relationships = [],
       disableRelationship = false,
+      commitMessagePlaceholder = '',
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
@@ -128,6 +130,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       type: 'text',
       name: 'msg',
       message: `[${green(pkgName)}] Commit message: `,
+      initial: commitMessagePlaceholder.trim(),
       format: (value: string) => value.trim(),
     })
 

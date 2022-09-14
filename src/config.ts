@@ -86,6 +86,10 @@ export interface UserConfig {
    * Disable relationship release
    */
   disableRelationship?: boolean
+  /**
+   * Placeholder of commit message
+   */
+  commitMessagePlaceholder?: string
 }
 
 export interface ResolvedUserConfig extends UserConfig {
@@ -229,6 +233,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve beforePublish
   if (inlineConfig.beforePublish)
     config.beforePublish = inlineConfig.beforePublish
+
+  // resolve commitMessagePlaceholder
+  if (inlineConfig.commitMessagePlaceholder)
+    config.commitMessagePlaceholder = inlineConfig.commitMessagePlaceholder
 
   return {
     cwd,
