@@ -5,7 +5,7 @@ specifiers:
   '@types/fs-extra': 9.0.13
   '@types/node': 18.0.0
   '@types/prompts': 2.0.14
-  '@types/semver': 7.3.12
+  '@types/semver': 7.3.13
   bundle-require: ^3.0.4
   cac: ^6.7.12
   check-package-exists: ^1.1.0
@@ -43,7 +43,7 @@ devDependencies:
   '@types/fs-extra': 9.0.13
   '@types/node': 18.0.0
   '@types/prompts': 2.0.14
-  '@types/semver': 7.3.12
+  '@types/semver': 7.3.13
   conventional-changelog-cli: 2.2.2
   eslint: 8.23.0
   lint-staged: 13.0.3
@@ -324,8 +324,8 @@ packages:
       '@types/node': 18.0.0
     dev: true
 
-  /@types/semver/7.3.12:
-    resolution: {integrity: sha512-WwA1MW0++RfXmCr12xeYOOC5baSC9mSb0ZqCquFzKhcoF4TvHu5MKOuXsncgZcpVFhB1pXd5hZmM0ryAoCp12A==}
+  /@types/semver/7.3.13:
+    resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
     dev: true
 
   /@types/unist/2.0.6:
