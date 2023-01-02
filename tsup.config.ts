@@ -9,5 +9,5 @@ export default defineConfig({
   },
   clean: true,
   splitting: true,
-  noExternal: ['execa', 'strip-json-comments'],
+  noExternal: ['strip-json-comments'],
 })
