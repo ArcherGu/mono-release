@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@esm2cjs/execa': 6.1.1-cjs.1
   '@lightwing/eslint-config': 0.0.9
-  '@types/fs-extra': 11.0.0
+  '@types/fs-extra': 11.0.1
   '@types/node': 18.11.18
   '@types/prompts': 2.4.2
   '@types/semver': 7.3.13
@@ -40,7 +40,7 @@ dependencies:
 
 devDependencies:
   '@lightwing/eslint-config': 0.0.9_iukboom6ndih5an6iafl45j2fe
-  '@types/fs-extra': 11.0.0
+  '@types/fs-extra': 11.0.1
   '@types/node': 18.11.18
   '@types/prompts': 2.4.2
   '@types/semver': 7.3.13
@@ -506,8 +506,8 @@ packages:
     resolution: {integrity: sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==}
     dev: true
 
-  /@types/fs-extra/11.0.0:
-    resolution: {integrity: sha512-zdV5odfHf95B4qr6bdpshG4VMm/3xgnPhSJLa3xh75CYr35e34k+4FQli82Q48sPqwHazJGy+6+jl4T+Vw1AMg==}
+  /@types/fs-extra/11.0.1:
+    resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
     dependencies:
       '@types/jsonfile': 6.1.1
       '@types/node': 18.11.18
