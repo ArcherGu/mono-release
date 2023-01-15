@@ -1,7 +1,7 @@
 {
   "name": "mono-release",
   "version": "0.0.0",
-  "packageManager": "pnpm@7.24.3",
+  "packageManager": "pnpm@7.25.0",
   "description": "A tiny monorepo release tool",
   "author": "ArcherGu",
   "license": "MIT",
