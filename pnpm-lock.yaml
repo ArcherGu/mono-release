@@ -21,7 +21,7 @@ specifiers:
   semver: ^7.3.8
   simple-git-hooks: 2.8.1
   strip-json-comments: ^5.0.0
-  tsup: 6.6.0
+  tsup: 6.6.2
   typescript: 4.9.5
   vitest: 0.28.4
 
@@ -48,7 +48,7 @@ devDependencies:
   eslint: 8.34.0
   lint-staged: 13.1.1
   simple-git-hooks: 2.8.1
-  tsup: 6.6.0_typescript@4.9.5
+  tsup: 6.6.2_typescript@4.9.5
   typescript: 4.9.5
   vitest: 0.28.4
 
@@ -4443,8 +4443,8 @@ packages:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
     dev: true
 
-  /tsup/6.6.0_typescript@4.9.5:
-    resolution: {integrity: sha512-HxZE7Hj5yNxLFftCXdcJ+Jsax8dI4oKb0bt8fIvd1g/W0FZ46sU1pFBVo15WpOERFcEMH7Hykey/Q+hKO4s9RQ==}
+  /tsup/6.6.2_typescript@4.9.5:
+    resolution: {integrity: sha512-+yQ6SI4rVtp1+YpcYOePumJLEVQ896CDNRt9dJ2L/DeMnLf1+FTOCVw5eioLBH0xLdHgogO9NQ6vPNF5MfkSJw==}
     engines: {node: '>=14'}
     hasBin: true
     peerDependencies:
