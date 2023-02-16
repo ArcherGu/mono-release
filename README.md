@@ -1,5 +1,5 @@
 # Mono Release 🎉
-[![npm](https://img.shields.io/npm/v/mono-release?style=flat-square)](https://npm.im/mono-release) [![npm](https://img.shields.io/npm/dw/mono-release?style=flat-square)](https://npm.im/mono-release) [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ArcherGu/mono-release/CI?style=flat-square)](https://github.com/ArcherGu/mono-release/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/mono-release?style=flat-square)](https://npm.im/mono-release) [![npm](https://img.shields.io/npm/dw/mono-release?style=flat-square)](https://npm.im/mono-release) [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ArcherGu/mono-release/ci.yml?style=flat-square)](https://github.com/ArcherGu/mono-release/actions/workflows/ci.yml)
 
 A tiny monorepo release tool.
 
