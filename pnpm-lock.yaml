@@ -5,7 +5,7 @@ specifiers:
   '@lightwing/eslint-config': 0.0.12
   '@types/fs-extra': 11.0.1
   '@types/node': 18.15.0
-  '@types/prompts': 2.4.2
+  '@types/prompts': 2.4.3
   '@types/semver': 7.3.13
   bundle-require: ^4.0.0
   cac: ^6.7.14
@@ -42,7 +42,7 @@ devDependencies:
   '@lightwing/eslint-config': 0.0.12_vgl77cfdswitgr47lm5swmv43m
   '@types/fs-extra': 11.0.1
   '@types/node': 18.15.0
-  '@types/prompts': 2.4.2
+  '@types/prompts': 2.4.3
   '@types/semver': 7.3.13
   conventional-changelog-cli: 2.2.2
   eslint: 8.36.0
@@ -967,8 +967,8 @@ packages:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: true
 
-  /@types/prompts/2.4.2:
-    resolution: {integrity: sha512-TwNx7qsjvRIUv/BCx583tqF5IINEVjCNqg9ofKHRlSoUHE62WBHrem4B1HGXcIrG511v29d1kJ9a/t2Esz7MIg==}
+  /@types/prompts/2.4.3:
+    resolution: {integrity: sha512-qpzXlxoPv67TCtTCS+SwYmz1M+G5ARTrE5YVlrZPy/xBD36dzLqiJLDzOzsMXkcJYq6+6UkWqFwtLAOjsfec5Q==}
     dependencies:
       '@types/node': 18.15.0
       kleur: 3.0.3
