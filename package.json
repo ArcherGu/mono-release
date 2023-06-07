@@ -32,7 +32,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "conventional-changelog-cli": "^2.2.2"
+    "conventional-changelog-cli": "^2.2.2 || ^3.0.0"
   },
   "peerDependenciesMeta": {
     "conventional-changelog-cli": {
@@ -58,7 +58,7 @@
     "@types/node": "18.16.16",
     "@types/prompts": "2.4.4",
     "@types/semver": "7.5.0",
-    "conventional-changelog-cli": "2.2.2",
+    "conventional-changelog-cli": "3.0.0",
     "eslint": "8.42.0",
     "lint-staged": "13.2.2",
     "simple-git-hooks": "2.8.1",
