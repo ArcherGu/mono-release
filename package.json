@@ -32,7 +32,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "conventional-changelog-cli": "^2.2.2 || ^3.0.0"
+    "conventional-changelog-cli": ">=3.0.0"
   },
   "peerDependenciesMeta": {
     "conventional-changelog-cli": {
