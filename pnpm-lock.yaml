@@ -44,8 +44,8 @@ devDependencies:
     specifier: 0.0.22
     version: 0.0.22(eslint@8.49.0)(typescript@5.2.2)
   '@types/fs-extra':
-    specifier: 11.0.1
-    version: 11.0.1
+    specifier: 11.0.2
+    version: 11.0.2
   '@types/node':
     specifier: 20.6.0
     version: 20.6.0
@@ -984,8 +984,8 @@ packages:
     resolution: {integrity: sha512-mEo1sAde+UCE6b2hxn332f1g1E8WfYRu6p5SvTKr2ZKC1f7gFJXk4h5PyGP9Dt6gCaG8y8XhwnXWC6Iy2cmBng==}
     dev: true
 
-  /@types/fs-extra@11.0.1:
-    resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
+  /@types/fs-extra@11.0.2:
+    resolution: {integrity: sha512-c0hrgAOVYr21EX8J0jBMXGLMgJqVf/v6yxi0dLaJboW9aQPh16Id+z6w2Tx1hm+piJOLv8xPfVKZCLfjPw/IMQ==}
     dependencies:
       '@types/jsonfile': 6.1.1
       '@types/node': 20.6.0
