@@ -55,7 +55,7 @@
   "devDependencies": {
     "@lightwing/eslint-config": "0.0.24",
     "@types/fs-extra": "11.0.2",
-    "@types/node": "20.7.1",
+    "@types/node": "20.7.2",
     "@types/prompts": "2.4.5",
     "@types/semver": "7.5.3",
     "conventional-changelog-cli": "4.1.0",
