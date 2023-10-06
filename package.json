@@ -59,7 +59,7 @@
     "@types/prompts": "2.4.5",
     "@types/semver": "7.5.3",
     "conventional-changelog-cli": "4.1.0",
-    "eslint": "8.50.0",
+    "eslint": "8.51.0",
     "lint-staged": "14.0.1",
     "simple-git-hooks": "2.9.0",
     "tsup": "7.2.0",
