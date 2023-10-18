@@ -63,9 +63,13 @@ export interface UserConfig {
    */
   packagesPath?: string
   /**
-   * Allowed branch(s), if specified, this tool will only work on specified branch, or throw error
+   * Allowed branch, if specified, this tool will only work on specified branch, or throw error
    */
   branch?: string | string[]
+  /**
+   * Skip branch check
+   */
+  skipBranchCheck?: boolean
   /**
    * include packages, if specified, this tool will only work on specified packages
    * @note `exclude` will override `include`
@@ -261,6 +265,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve branch
   if (inlineConfig.branch)
     config.branch = inlineConfig.branch
+
+  // resolve skipBranchCheck
+  if (inlineConfig.skipBranchCheck)
+    config.skipBranchCheck = inlineConfig.skipBranchCheck
 
   // resolve commitCheck
   if (inlineConfig.commitCheck !== undefined)

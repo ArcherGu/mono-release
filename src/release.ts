@@ -39,6 +39,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
   const rb = new Rollback()
   try {
     const config = await resolveConfig(inlineConfig)
+
     const {
       cwd = process.cwd(),
       packagesPath = path.join(cwd, 'packages'),
@@ -49,6 +50,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       dry: isDryRun = false,
       push: autoPush = true,
       branch,
+      skipBranchCheck,
       commitCheck = true,
       beforeRelease,
       relationships = [],
@@ -77,8 +79,12 @@ export async function release(inlineConfig: InlineConfig = {}) {
       logger.warn(TAG, 'Commit check is disabled. This may cause you to lose all uncommited changes.\n')
     }
 
-    if (branch)
-      await branchCheck(branch)
+    if (branch) {
+      if (skipBranchCheck)
+        logger.warn(TAG, 'Branch check is disabled. This may cause you to release on a wrong branch. Please know what you are doing.\n')
+      else
+        await branchCheck(branch)
+    }
 
     let pkg: string | undefined
     if (specifiedPackage) {

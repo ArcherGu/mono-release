@@ -30,13 +30,18 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     packagesPath = path.join(cwd, 'packages'),
     dry: isDryRun = false,
     branch,
+    skipBranchCheck,
     packageManager = 'npm',
     beforePublish,
   } = config
   const { runIfNotDry } = getRunner(isDryRun)
 
-  if (branch)
-    await branchCheck(branch)
+  if (branch) {
+    if (skipBranchCheck)
+      logger.warn(pkgName, 'Branch check is disabled. This may cause you to release on a wrong branch. Please know what you are doing.\n')
+    else
+      await branchCheck(branch)
+  }
 
   const { currentVersion, pkgDir } = getPackageInfo(pkgName, packagesPath)
   if (currentVersion !== version)

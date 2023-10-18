@@ -12,6 +12,7 @@ interface CommonCLIOptions {
   config?: string
   b?: string
   branch?: string // branch1,branch2,branch3
+  skipBranchCheck?: boolean
   dry?: boolean
 }
 
@@ -21,6 +22,7 @@ const logger = createLogger()
 cli
   .option('-c, --config <file>', 'Use specified config file')
   .option('-b, --branch <names>', 'Use specified branch(s)')
+  .option('--skip-branch-check', 'Skip branch check')
   .option('--dry', 'Dry run, change file but not running any git actions')
 
 cli
@@ -52,6 +54,7 @@ cli
         dry: options.dry,
         disablePush: options.disablePush,
         branch: options.branch?.split(','),
+        skipBranchCheck: options.skipBranchCheck,
         commitCheck: options.commitCheck,
         beforeRelease: options.beforeRelease,
         disableRelationship: !!options.disableRelationship,
