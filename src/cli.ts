@@ -4,6 +4,7 @@ import { cac } from 'cac'
 import type { ReleaseOptions } from './release'
 import { TAG, createLogger } from './log'
 import type { PublishOptions } from './publish'
+import type { VersionType } from './config'
 
 interface CommonCLIOptions {
   '--'?: string[]
@@ -38,6 +39,7 @@ cli
   .option('--disable-relationship', 'Disable relationship release')
   .option('--commit-message-placeholder', 'Commit message placeholder')
   .option('--ci', 'Run in CI mode, will skip all select actions, you must specify `--specified-package`')
+  .option('--version-type', 'Default version type, if you specify it, will skip version select action: next,alpha-minor,alpha-major,beta-minor,beta-major,minor,major')
   .action(async (options: ReleaseOptions & CommonCLIOptions) => {
     const { release } = await import('./release')
     try {
@@ -55,6 +57,7 @@ cli
         disableRelationship: !!options.disableRelationship,
         commitMessagePlaceholder: options.commitMessagePlaceholder,
         ci: options.ci,
+        versionType: options.versionType as VersionType,
       })
     }
     catch (e) {

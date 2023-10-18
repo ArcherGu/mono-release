@@ -29,6 +29,7 @@ export interface ReleaseOptions {
   disableRelationship?: boolean
   commitMessagePlaceholder?: string
   ci?: boolean
+  versionType?: string // next,alpha-minor,alpha-major,beta-minor,beta-major,minor,major
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
@@ -52,6 +53,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       disableRelationship = false,
       commitMessagePlaceholder = '',
       ci = false,
+      versionType,
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
@@ -109,29 +111,35 @@ export async function release(inlineConfig: InlineConfig = {}) {
     const { currentVersion, pkgName, pkgPath, pkgDir } = getPackageInfo(pkg, packagesPath)
 
     let targetVersion: string | undefined
+    const versionChoices = getVersionChoices(currentVersion)
     if (ci) {
-      targetVersion = getVersionChoices(currentVersion).find(e => e.title.includes('next'))?.value
+      targetVersion = versionChoices.find(e => e.title.includes(versionType ?? 'next'))?.value
       logger.info(pkgName, `[CI] Target version: ${targetVersion}`)
     }
     else {
-      const { releaseType }: { releaseType: string } = await prompts({
-        type: 'select',
-        name: 'releaseType',
-        message: `[${green(pkgName)}] Select release type`,
-        choices: getVersionChoices(currentVersion),
-      })
+      if (versionType)
+        targetVersion = versionChoices.find(e => e.title.includes(versionType))?.value
 
-      if (releaseType === 'custom') {
-        const res: { version: string } = await prompts({
-          type: 'text',
-          name: 'version',
-          message: `[${green(pkgName)}] Input custom version`,
-          initial: currentVersion,
+      if (!targetVersion) {
+        const { releaseType }: { releaseType: string } = await prompts({
+          type: 'select',
+          name: 'releaseType',
+          message: `[${green(pkgName)}] Select release type`,
+          choices: getVersionChoices(currentVersion),
         })
-        targetVersion = res.version
-      }
-      else {
-        targetVersion = releaseType
+
+        if (releaseType === 'custom') {
+          const res: { version: string } = await prompts({
+            type: 'text',
+            name: 'version',
+            message: `[${green(pkgName)}] Input custom version`,
+            initial: currentVersion,
+          })
+          targetVersion = res.version
+        }
+        else {
+          targetVersion = releaseType
+        }
       }
     }
 
@@ -140,6 +148,8 @@ export async function release(inlineConfig: InlineConfig = {}) {
 
     if (!semver.valid(targetVersion))
       throw new Error(`[${pkgName}] Invalid target version: ${targetVersion}`)
+
+    logger.info(pkgName, `Target Version: ${targetVersion}`)
 
     const tag = `${pkgName}@${targetVersion}`
 

@@ -5,8 +5,11 @@ import strip from 'strip-json-comments'
 import { bundleRequire } from 'bundle-require'
 import { checkPackageExists } from 'check-package-exists'
 import { TAG, createLogger } from './log'
+import type { VERSION_TYPE } from './constants'
 
 export type PackageManager = 'npm' | 'yarn' | 'pnpm'
+
+export type VersionType = typeof VERSION_TYPE[number]
 
 export interface RelationshipOpt {
   /**
@@ -98,6 +101,13 @@ export interface UserConfig {
    * Placeholder of commit message
    */
   commitMessagePlaceholder?: string
+  /**
+   * Default version type, if you specify it, will skip version select action
+   *
+   * Available values: next, alpha-minor, alpha-major, beta-minor, beta-major, minor, major
+   * @default undefined
+   */
+  versionType?: VersionType
 }
 
 export interface ResolvedUserConfig extends UserConfig {
@@ -246,6 +256,10 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   // resolve commitMessagePlaceholder
   if (inlineConfig.commitMessagePlaceholder)
     config.commitMessagePlaceholder = inlineConfig.commitMessagePlaceholder
+
+  // resolve versionType
+  if (inlineConfig.versionType)
+    config.versionType = inlineConfig.versionType
 
   return {
     cwd,
