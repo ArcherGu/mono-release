@@ -30,6 +30,7 @@ export interface ReleaseOptions {
   disableRelationship?: boolean
   commitMessagePlaceholder?: string
   ci?: boolean
+  ciMsgSuffix?: string
   versionType?: string // next,alpha-minor,alpha-major,beta-minor,beta-major,minor,major
 }
 
@@ -54,6 +55,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       disableRelationship = false,
       commitMessagePlaceholder = '',
       ci = false,
+      ciMsgSuffix,
       versionType,
     } = config
 
@@ -175,7 +177,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       userCommitMsg = msg
     }
     else {
-      userCommitMsg = `[CI release]${commitMessagePlaceholder}` ? ` ${commitMessagePlaceholder}` : ''
+      userCommitMsg = `[CI release]${commitMessagePlaceholder ? ` ${commitMessagePlaceholder}` : ''}${ciMsgSuffix ? ` ${ciMsgSuffix}` : ''}`
       logger.info(pkgName, `[CI] Commit message: "${userCommitMsg}"`)
     }
 

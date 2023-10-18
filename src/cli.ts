@@ -38,6 +38,7 @@ cli
   .option('--disable-relationship', 'Disable relationship release')
   .option('--commit-message-placeholder', 'Commit message placeholder')
   .option('--ci', 'Run in CI mode, will skip all select actions, you must specify `--specified-package`')
+  .option('--ci-msg-suffix', 'In CI mode, you can specify a suffix for commit message, for example: `[skip ci]`')
   .option('--version-type', 'Default version type, if you specify it, will skip version select action: next,alpha-minor,alpha-major,beta-minor,beta-major,minor,major')
   .action(async (options: ReleaseOptions & CommonCLIOptions) => {
     const { release } = await import('./release')
@@ -56,6 +57,7 @@ cli
         disableRelationship: !!options.disableRelationship,
         commitMessagePlaceholder: options.commitMessagePlaceholder,
         ci: options.ci,
+        ciMsgSuffix: options.ciMsgSuffix,
         versionType: options.versionType as VersionType,
       })
     }

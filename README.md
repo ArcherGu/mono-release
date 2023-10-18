@@ -158,6 +158,13 @@ mono-release --ci
 ```
 Run in CI mode, will skip all select actions, you must specify `--specified-package`.
 
+### ci msg suffix
+
+```shell
+mono-release --ci --ci-msg-suffix "[skip ci]"
+```
+Specify commit message suffix in CI mode, example: `[skip ci]`.
+
 ### before release
 
 ```shell

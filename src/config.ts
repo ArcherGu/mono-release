@@ -129,6 +129,10 @@ export interface UserConfig {
    * @default undefined
    */
   versionType?: VersionType
+  /**
+   * In CI mode, you can specify a suffix for commit message, for example: `[skip ci]`
+   */
+  ciMsgSuffix?: string
 }
 
 export interface ResolvedUserConfig extends UserConfig {
