@@ -35,6 +35,18 @@ export interface InlineConfig extends Omit<UserConfig, 'packagesPath'> {
   ci?: boolean
 }
 
+export type BeforeHook =
+  string |
+  ((pkgName: string, version: string) => Promise<void>) |
+  {
+    command: string
+    cwd?: string
+    /**
+     * If specified, only run this hook when release/public this package
+     */
+    package?: string
+  }
+
 export interface UserConfig {
   /**
    * monorepo packages path
@@ -83,12 +95,12 @@ export interface UserConfig {
   /**
    * You can specify command/function to be executed before release
    */
-  beforeRelease?: string | ((pkgName: string, targetVersion: string) => Promise<void>) | { command: string; cwd: string }
+  beforeRelease?: BeforeHook | BeforeHook[]
   /**
    * You can specify command/function to be executed before publish
    * @Note the default cwd is the package directory when running before publish command
    */
-  beforePublish?: string | ((pkgName: string, version: string) => Promise<void>) | { command: string; cwd: string }
+  beforePublish?: BeforeHook | BeforeHook[]
   /**
    * Dependencies relationship, when the base package is released, the upper-level packages can also be released
    */

@@ -1,4 +1,5 @@
-import path from 'path'
+import path from 'node:path'
+import { execSync } from 'node:child_process'
 import type { InlineConfig, PackageManager } from './config'
 import { resolveConfig } from './config'
 import { createLogger } from './log'
@@ -18,7 +19,6 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
   if (!tag.includes('@'))
     throw new Error(`Invalid tag: ${tag}, must be in format <pkg>@<version>`)
 
-  // eslint-disable-next-line prefer-const
   let [pkgName, version] = tag.split('@')
 
   if (version.startsWith('v'))
@@ -33,7 +33,7 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     packageManager = 'npm',
     beforePublish,
   } = config
-  const { run, runIfNotDry } = getRunner(isDryRun)
+  const { runIfNotDry } = getRunner(isDryRun)
 
   if (branch) {
     const checkResult = await branchCheck(branch)
@@ -46,19 +46,25 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     throw new Error(`Package version from tag "${version}" mismatches with current version "${currentVersion}"`)
 
   // run before publish
-  if (beforePublish)
+  if (beforePublish) {
     logger.info(pkgName, 'Running before publish...')
 
-  if (typeof beforePublish === 'string') {
-    // default cwd is package dir
-    await run(beforePublish, [], { cwd: pkgDir })
-  }
-  else if (typeof beforePublish === 'function') {
-    await beforePublish(pkgName, currentVersion)
-  }
-  else if (typeof beforePublish === 'object') {
-    const { command, cwd } = beforePublish
-    await run(command, [], { cwd })
+    const beforePublishArr = Array.isArray(beforePublish) ? beforePublish : [beforePublish]
+    for (const before of beforePublishArr) {
+      if (typeof before === 'string') {
+        // default cwd is package dir
+        const stdout = execSync(before, { cwd: pkgDir })
+        logger.info(pkgName, stdout.toString())
+      }
+      else if (typeof beforePublish === 'function') {
+        await beforePublish(pkgName, currentVersion)
+      }
+      else if (typeof before === 'object' && (!before.package || before.package === pkgName)) {
+        const { command, cwd } = before
+        const stdout = execSync(command, { cwd })
+        logger.info(pkgName, stdout.toString())
+      }
+    }
   }
 
   logger.info(pkgName, 'Publishing package...')

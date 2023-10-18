@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { execSync } from 'node:child_process'
 import prompts from 'prompts'
 import semver from 'semver'
 import { green, yellow } from 'colorette'
@@ -185,18 +186,24 @@ export async function release(inlineConfig: InlineConfig = {}) {
     })
 
     // run before release
-    if (beforeRelease)
+    if (beforeRelease) {
       logger.info(pkgName, 'Running before release...')
 
-    if (typeof beforeRelease === 'string') {
-      await run(beforeRelease, [])
-    }
-    else if (typeof beforeRelease === 'function') {
-      await beforeRelease(pkgName, targetVersion)
-    }
-    else if (typeof beforeRelease === 'object') {
-      const { command, cwd } = beforeRelease
-      await run(command, [], { cwd })
+      const beforeReleaseArr = Array.isArray(beforeRelease) ? beforeRelease : [beforeRelease]
+      for (const before of beforeReleaseArr) {
+        if (typeof before === 'string') {
+          const stdout = execSync(before)
+          logger.info(pkgName, stdout.toString())
+        }
+        else if (typeof before === 'function') {
+          await before(pkgName, targetVersion)
+        }
+        else if (typeof before === 'object' && (!before.package || before.package === pkgName)) {
+          const { command, cwd } = before
+          const stdout = execSync(command, { cwd })
+          logger.info(pkgName, stdout.toString())
+        }
+      }
     }
 
     logger.info(pkgName, 'Updating package version...')
