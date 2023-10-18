@@ -143,6 +143,21 @@ mono-release --no-commit-check
 Whether to check commit before release. (default: `true`)
 > **Warning**: If disabled, you may lose all uncommited changes when rollback.
 
+### version type
+
+```shell
+mono-release --version-type alpha-minor
+```
+Default version type, if you specify it, will skip version select action. (default: `undefined`)
+Available values: `next`, `alpha-minor`, `alpha-major`, `beta-minor`, `beta-major`, `minor`, `major`.
+
+### ci
+
+```shell
+mono-release --ci
+```
+Run in CI mode, will skip all select actions, you must specify `--specified-package`.
+
 ### before release
 
 ```shell
