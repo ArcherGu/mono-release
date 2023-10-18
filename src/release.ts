@@ -277,7 +277,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
         if (ci) {
           logger.warn(pkgName, '[CI] Push failed, auto rollback')
           await rb.rollback()
-          return
+          process.exit(1)
         }
 
         const { yes }: { yes: boolean } = await prompts({
@@ -311,7 +311,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
           logger.warn(pkgName, '[CI] Push tag failed, auto rollback')
           await logLastCommit()
           await rb.rollback()
-          return
+          process.exit(1)
         }
 
         const { yes }: { yes: boolean } = await prompts({
