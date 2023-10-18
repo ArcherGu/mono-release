@@ -124,14 +124,14 @@ mono-release --dry
 ```
 Dry run. (default: `false`)
 
-### push
+### disable push
 
 ```shell
-mono-release --push
+mono-release --disable-push
 # Or disabled
 mono-release --no-push
 ```
-Automatically push the commit and tag after release. (default: `true`)
+By default, this tool will push commit and tag to remote, use this option to disable it. (default: `false`)
 
 ### commit check
 
