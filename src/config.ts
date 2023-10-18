@@ -227,6 +227,7 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
     }
   }
 
+  // Special Resolves
   // resolve packagesPath
   if (config.packagesPath) {
     if (!path.isAbsolute(config.packagesPath))
@@ -248,51 +249,37 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
     config.changelog = true
   }
 
-  // resolve include
-  config.include = inlineConfig.include ?? config.include ?? []
-
-  // resolve exclude
-  config.exclude = inlineConfig.exclude ?? config.exclude ?? []
-
-  // resolve dry
-  if (inlineConfig.dry !== undefined)
-    config.dry = inlineConfig.dry
-
-  // resolve push
+  // resolve push/disablePush
   if (inlineConfig.disablePush !== undefined)
     config.push = !inlineConfig.disablePush
-
-  // resolve branch
-  if (inlineConfig.branch)
-    config.branch = inlineConfig.branch
-
-  // resolve skipBranchCheck
-  if (inlineConfig.skipBranchCheck)
-    config.skipBranchCheck = inlineConfig.skipBranchCheck
-
-  // resolve commitCheck
-  if (inlineConfig.commitCheck !== undefined)
-    config.commitCheck = inlineConfig.commitCheck
 
   // resolve packageManager
   if (inlineConfig.packageManager && ['npm', 'yarn', 'pnpm'].includes(inlineConfig.packageManager))
     config.packageManager = inlineConfig.packageManager
 
-  // resolve beforeRelease
-  if (inlineConfig.beforeRelease)
-    config.beforeRelease = inlineConfig.beforeRelease
+  // Common Resolves
+  // resolve array type options
+  for (const key of ['include', 'exclude']) {
+    // @ts-expect-error ignore
+    config[key] = inlineConfig[key] ?? config[key] ?? []
+  }
 
-  // resolve beforePublish
-  if (inlineConfig.beforePublish)
-    config.beforePublish = inlineConfig.beforePublish
-
-  // resolve commitMessagePlaceholder
-  if (inlineConfig.commitMessagePlaceholder)
-    config.commitMessagePlaceholder = inlineConfig.commitMessagePlaceholder
-
-  // resolve versionType
-  if (inlineConfig.versionType)
-    config.versionType = inlineConfig.versionType
+  // resolve other options
+  for (const key of [
+    'dry',
+    'branch',
+    'skipBranchCheck',
+    'commitCheck',
+    'beforeRelease',
+    'beforePublish',
+    'commitMessagePlaceholder',
+    'versionType',
+  ]) {
+    // @ts-expect-error ignore
+    if (inlineConfig[key] !== undefined)
+      // @ts-expect-error ignore
+      config[key] = inlineConfig[key]
+  }
 
   return {
     cwd,
