@@ -33,6 +33,11 @@ export interface InlineConfig extends Omit<UserConfig, 'packagesPath'> {
    * @default false
    */
   ci?: boolean
+  /**
+   * Disable auto push to remote after release
+   * @default false
+   */
+  disablePush?: boolean
 }
 
 export type BeforeHook =
@@ -246,8 +251,8 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
     config.dry = inlineConfig.dry
 
   // resolve push
-  if (inlineConfig.push !== undefined)
-    config.push = inlineConfig.push
+  if (inlineConfig.disablePush !== undefined)
+    config.push = !inlineConfig.disablePush
 
   // resolve branch
   if (typeof inlineConfig.branch === 'string' || inlineConfig.branch === false)

@@ -31,8 +31,7 @@ cli
   .option('--no-changelog', 'Disable changelog')
   .option('--include <names>', 'Include specified packages, `exclude` will override it')
   .option('--exclude <names>', 'Excludes specified packages')
-  .option('--push', 'Auto push to remote after release')
-  .option('--no-push', 'Disable auto push to remote after release')
+  .option('--disable-push', 'Disable auto push to remote after release')
   .option('--commit-check', 'Commit check, you should commit all uncommited changes before release')
   .option('--no-commit-check', 'Disable commit check, warning: this may cause you to lose all uncommited changes when rollback')
   .option('--before-release <command>', 'Run command before release')
@@ -50,7 +49,7 @@ cli
         include: options.include?.split(','),
         exclude: options.exclude?.split(','),
         dry: options.dry,
-        push: options.push,
+        disablePush: options.disablePush,
         branch: options.branch,
         commitCheck: options.commitCheck,
         beforeRelease: options.beforeRelease,

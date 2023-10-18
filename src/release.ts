@@ -24,7 +24,7 @@ export interface ReleaseOptions {
   changelog?: boolean
   include?: string // string,string,...
   exclude?: string // string,string,...
-  push?: boolean
+  disablePush?: boolean
   commitCheck?: boolean
   beforeRelease?: string
   disableRelationship?: boolean
@@ -115,7 +115,6 @@ export async function release(inlineConfig: InlineConfig = {}) {
     const versionChoices = getVersionChoices(currentVersion)
     if (ci) {
       targetVersion = versionChoices.find(e => e.title.includes(versionType ?? 'next'))?.value
-      logger.info(pkgName, `[CI] Target version: ${targetVersion}`)
     }
     else {
       if (versionType)
@@ -150,7 +149,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
     if (!semver.valid(targetVersion))
       throw new Error(`[${pkgName}] Invalid target version: ${targetVersion}`)
 
-    logger.info(pkgName, `Target Version: ${targetVersion}`)
+    logger.info(pkgName, `${ci ? '[CI] ' : ''}Target Version: ${targetVersion}`)
 
     const tag = `${pkgName}@${targetVersion}`
 
