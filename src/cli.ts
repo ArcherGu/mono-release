@@ -11,7 +11,7 @@ interface CommonCLIOptions {
   c?: string
   config?: string
   b?: string
-  branch?: string
+  branch?: string // branch1,branch2,branch3
   dry?: boolean
 }
 
@@ -20,7 +20,7 @@ const logger = createLogger()
 
 cli
   .option('-c, --config <file>', 'Use specified config file')
-  .option('-b, --branch <name>', 'Use specified branch')
+  .option('-b, --branch <names>', 'Use specified branch(s)')
   .option('--dry', 'Dry run, change file but not running any git actions')
 
 cli
@@ -51,7 +51,7 @@ cli
         exclude: options.exclude?.split(','),
         dry: options.dry,
         disablePush: options.disablePush,
-        branch: options.branch,
+        branch: options.branch?.split(','),
         commitCheck: options.commitCheck,
         beforeRelease: options.beforeRelease,
         disableRelationship: !!options.disableRelationship,

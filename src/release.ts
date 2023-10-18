@@ -48,7 +48,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
       exclude = [],
       dry: isDryRun = false,
       push: autoPush = true,
-      branch = false,
+      branch,
       commitCheck = true,
       beforeRelease,
       relationships = [],
@@ -77,11 +77,8 @@ export async function release(inlineConfig: InlineConfig = {}) {
       logger.warn(TAG, 'Commit check is disabled. This may cause you to lose all uncommited changes.\n')
     }
 
-    if (branch) {
-      const checkResult = await branchCheck(branch)
-      if (!checkResult)
-        throw new Error(`You are not on branch "${branch}". Please switch to it first.`)
-    }
+    if (branch)
+      await branchCheck(branch)
 
     let pkg: string | undefined
     if (specifiedPackage) {

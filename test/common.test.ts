@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import { getPackageInfo, getPackages } from '../src/utils'
 import { createMockMonorepo } from './mock'

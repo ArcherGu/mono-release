@@ -1,8 +1,8 @@
 /**
  * Modified from https://github.com/vuejs/core/blob/master/scripts/release.js
  */
-import { existsSync, readdirSync, writeFileSync } from 'fs'
-import path from 'path'
+import { existsSync, readdirSync, writeFileSync } from 'node:fs'
+import path from 'node:path'
 import { blue, bold, gray, green, inverse } from 'colorette'
 import type { Options as ExecaOptions } from '@esm2cjs/execa'
 import { execa } from '@esm2cjs/execa'
@@ -45,7 +45,7 @@ export function getPackageInfo(pkgName: string, packagesPath: string) {
     name: string
     version: string
     private?: boolean
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
   } = require(pkgPath)
   const currentVersion = pkg.version
 
@@ -217,7 +217,10 @@ export async function logLastCommit() {
   logger.break()
 }
 
-export async function branchCheck(branch: string) {
+export async function branchCheck(branch: string | string[]) {
+  const branches = typeof branch === 'string' ? [branch] : branch
+
   const { stdout: currentBranch } = await run('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { stdio: 'pipe' })
-  return currentBranch === branch
+  if (!branches.includes(currentBranch))
+    throw new Error(`You are not on branch "${branches.join(', ')}". Please switch to it first.`)
 }

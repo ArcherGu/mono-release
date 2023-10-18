@@ -29,17 +29,14 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
     cwd = process.cwd(),
     packagesPath = path.join(cwd, 'packages'),
     dry: isDryRun = false,
-    branch = false,
+    branch,
     packageManager = 'npm',
     beforePublish,
   } = config
   const { runIfNotDry } = getRunner(isDryRun)
 
-  if (branch) {
-    const checkResult = await branchCheck(branch)
-    if (!checkResult)
-      throw new Error(`You are not on branch "${branch}". Please switch to it first.`)
-  }
+  if (branch)
+    await branchCheck(branch)
 
   const { currentVersion, pkgDir } = getPackageInfo(pkgName, packagesPath)
   if (currentVersion !== version)
