@@ -59,7 +59,13 @@ export async function publish(tag: string, inlineConfig: InlineConfig = {}) {
       else if (typeof beforePublish === 'function') {
         await beforePublish(pkgName, currentVersion)
       }
-      else if (typeof before === 'object' && (!before.package || before.package === pkgName)) {
+      else if (
+        typeof before === 'object'
+        && (!before.package || before.package === pkgName)
+      ) {
+        if (isDryRun && before.skipInDry)
+          continue
+
         const { command, cwd } = before
         const stdout = execSync(command, { cwd })
         logger.info(pkgName, stdout.toString())

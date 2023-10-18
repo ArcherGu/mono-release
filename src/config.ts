@@ -45,6 +45,10 @@ export type BeforeHook =
      * If specified, only run this hook when release/public this package
      */
     package?: string
+    /**
+     * Skip this hook when running in dry mode
+     */
+    skipInDry?: boolean
   }
 
 export interface UserConfig {

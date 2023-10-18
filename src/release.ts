@@ -198,7 +198,13 @@ export async function release(inlineConfig: InlineConfig = {}) {
         else if (typeof before === 'function') {
           await before(pkgName, targetVersion)
         }
-        else if (typeof before === 'object' && (!before.package || before.package === pkgName)) {
+        else if (
+          typeof before === 'object'
+          && (!before.package || before.package === pkgName)
+        ) {
+          if (isDryRun && before.skipInDry)
+            continue
+
           const { command, cwd } = before
           const stdout = execSync(command, { cwd })
           logger.info(pkgName, stdout.toString())
