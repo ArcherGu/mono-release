@@ -1,5 +1,5 @@
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 import JoyCon from 'joycon'
 import strip from 'strip-json-comments'
 import { bundleRequire } from 'bundle-require'
@@ -21,7 +21,15 @@ export interface RelationshipOpt {
 
 export interface InlineConfig extends Omit<UserConfig, 'packagesPath'> {
   configFile?: string
+  /**
+   * Specified package which will be released, skip selector, ignore `exclude`
+   */
   specifiedPackage?: string
+  /**
+   * Run in CI mode, will skip all select actions, you must specify `--specified-package`
+   * @default false
+   */
+  ci?: boolean
 }
 
 export interface UserConfig {
@@ -95,6 +103,7 @@ export interface UserConfig {
 export interface ResolvedUserConfig extends UserConfig {
   cwd?: string
   specifiedPackage?: string
+  ci?: boolean
 }
 
 export type UserConfigExport = UserConfig | Promise<UserConfig>
@@ -241,6 +250,7 @@ export async function resolveConfig(inlineConfig: InlineConfig, cwd: string = pr
   return {
     cwd,
     specifiedPackage: inlineConfig.specifiedPackage,
+    ci: inlineConfig.ci,
     ...config,
   }
 }

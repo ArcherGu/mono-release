@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import prompts from 'prompts'
 import semver from 'semver'
 import { green, yellow } from 'colorette'
@@ -28,6 +28,7 @@ export interface ReleaseOptions {
   beforeRelease?: string
   disableRelationship?: boolean
   commitMessagePlaceholder?: string
+  ci?: boolean
 }
 
 export async function release(inlineConfig: InlineConfig = {}) {
@@ -50,9 +51,16 @@ export async function release(inlineConfig: InlineConfig = {}) {
       relationships = [],
       disableRelationship = false,
       commitMessagePlaceholder = '',
+      ci = false,
     } = config
 
     const { run, runIfNotDry } = getRunner(isDryRun)
+
+    if (ci) {
+      logger.info(TAG, 'Running in CI mode, will skip all select actions.')
+      if (!specifiedPackage)
+        throw new Error('You must specify one package when running in CI mode, use --specified-package <name>')
+    }
 
     if (commitCheck) {
       const { stdout: diffCheck } = await run('git', ['diff'], { stdio: 'pipe' })
@@ -101,47 +109,65 @@ export async function release(inlineConfig: InlineConfig = {}) {
     const { currentVersion, pkgName, pkgPath, pkgDir } = getPackageInfo(pkg, packagesPath)
 
     let targetVersion: string | undefined
-    const { releaseType }: { releaseType: string } = await prompts({
-      type: 'select',
-      name: 'releaseType',
-      message: `[${green(pkgName)}] Select release type`,
-      choices: getVersionChoices(currentVersion),
-    })
-
-    if (releaseType === 'custom') {
-      const res: { version: string } = await prompts({
-        type: 'text',
-        name: 'version',
-        message: `[${green(pkgName)}] Input custom version`,
-        initial: currentVersion,
-      })
-      targetVersion = res.version
+    if (ci) {
+      targetVersion = getVersionChoices(currentVersion).find(e => e.title.includes('next'))?.value
+      logger.info(pkgName, `[CI] Target version: ${targetVersion}`)
     }
     else {
-      targetVersion = releaseType
+      const { releaseType }: { releaseType: string } = await prompts({
+        type: 'select',
+        name: 'releaseType',
+        message: `[${green(pkgName)}] Select release type`,
+        choices: getVersionChoices(currentVersion),
+      })
+
+      if (releaseType === 'custom') {
+        const res: { version: string } = await prompts({
+          type: 'text',
+          name: 'version',
+          message: `[${green(pkgName)}] Input custom version`,
+          initial: currentVersion,
+        })
+        targetVersion = res.version
+      }
+      else {
+        targetVersion = releaseType
+      }
     }
 
+    if (!targetVersion)
+      throw new Error(`[${pkgName}] No target version`)
+
     if (!semver.valid(targetVersion))
-      throw new Error(`[${green(pkgName)}] Invalid target version: ${targetVersion}`)
+      throw new Error(`[${pkgName}] Invalid target version: ${targetVersion}`)
 
     const tag = `${pkgName}@${targetVersion}`
 
-    const { msg }: { msg: string } = await prompts({
-      type: 'text',
-      name: 'msg',
-      message: `[${green(pkgName)}] Commit message: `,
-      initial: commitMessagePlaceholder.trim(),
-      format: (value: string) => value.trim(),
-    })
+    let userCommitMsg: string | undefined
+    if (!ci) {
+      const { msg }: { msg: string } = await prompts({
+        type: 'text',
+        name: 'msg',
+        message: `[${green(pkgName)}] Commit message: `,
+        initial: commitMessagePlaceholder.trim(),
+        format: (value: string) => value.trim(),
+      })
 
-    const { yes }: { yes: boolean } = await prompts({
-      type: 'confirm',
-      name: 'yes',
-      message: `[${green(pkgName)}] Releasing ${yellow(tag)} Confirm?`,
-    })
+      const { yes }: { yes: boolean } = await prompts({
+        type: 'confirm',
+        name: 'yes',
+        message: `[${green(pkgName)}] Releasing ${yellow(tag)} Confirm?`,
+      })
 
-    if (!yes)
-      return
+      if (!yes)
+        return
+
+      userCommitMsg = msg
+    }
+    else {
+      userCommitMsg = `[CI release]${commitMessagePlaceholder}` ? ` ${commitMessagePlaceholder}` : ''
+      logger.info(pkgName, `[CI] Commit message: "${userCommitMsg}"`)
+    }
 
     rb.add(async () => {
       await runIfNotDry('git', ['checkout', '.'], { stdio: 'pipe' })
@@ -192,7 +218,7 @@ export async function release(inlineConfig: InlineConfig = {}) {
         logger.warn(pkgName, 'Rollback: Cancel git add')
       })
 
-      const commitMsg = `release: ${tag}${msg ? `\n\n${msg}` : ''}`
+      const commitMsg = `release: ${tag}${userCommitMsg ? `\n\n${userCommitMsg}` : ''}`
       await runIfNotDry('git', ['commit', '-m', commitMsg])
       rb.add(async () => {
         await runIfNotDry('git', ['reset', '--soft', 'HEAD^'])
@@ -225,6 +251,12 @@ export async function release(inlineConfig: InlineConfig = {}) {
       catch (err) {
         logger.error(pkgName, err)
         logger.break()
+        if (ci) {
+          logger.warn(pkgName, '[CI] Push failed, auto rollback')
+          await rb.rollback()
+          return
+        }
+
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
           name: 'yes',
@@ -252,6 +284,13 @@ export async function release(inlineConfig: InlineConfig = {}) {
       catch (err) {
         logger.error(pkgName, err)
         logger.break()
+        if (ci) {
+          logger.warn(pkgName, '[CI] Push tag failed, auto rollback')
+          await logLastCommit()
+          await rb.rollback()
+          return
+        }
+
         const { yes }: { yes: boolean } = await prompts({
           type: 'confirm',
           name: 'yes',
@@ -291,26 +330,35 @@ export async function release(inlineConfig: InlineConfig = {}) {
       let depPkgs = validRelationships.reduce<string[]>((p, c) => [...p, ...c.pkgs], [])
       depPkgs = Array.from(new Set(depPkgs))
 
-      const { yes }: { yes: boolean } = await prompts({
-        type: 'confirm',
-        name: 'yes',
-        message: `\n\nSome upper-level packages depend on [${green(pkgName)}], do you want to release them?`,
-      })
+      const upperPkgs = []
+      if (!ci) {
+        const { yes }: { yes: boolean } = await prompts({
+          type: 'confirm',
+          name: 'yes',
+          message: `\n\nSome upper-level packages depend on [${green(pkgName)}], do you want to release them?`,
+        })
 
-      if (!yes)
-        return
+        if (!yes)
+          return
 
-      const { selectedPkgs }: { selectedPkgs: string[] } = await prompts({
-        type: 'multiselect',
-        name: 'selectedPkgs',
-        message: '\nSelect upper-level packages',
-        choices: depPkgs.map(p => ({ value: p, title: p })),
-      })
+        const { selectedPkgs }: { selectedPkgs: string[] } = await prompts({
+          type: 'multiselect',
+          name: 'selectedPkgs',
+          message: '\nSelect upper-level packages',
+          choices: depPkgs.map(p => ({ value: p, title: p })),
+        })
 
-      for (const selectedPkg of selectedPkgs) {
+        upperPkgs.push(...selectedPkgs)
+      }
+      else {
+        logger.info(TAG, '[CI] Will auto release upper-level packages')
+        upperPkgs.push(...depPkgs)
+      }
+
+      for (const pkg of upperPkgs) {
         await release({
           ...inlineConfig,
-          specifiedPackage: selectedPkg,
+          specifiedPackage: pkg,
           disableRelationship: true,
         })
       }

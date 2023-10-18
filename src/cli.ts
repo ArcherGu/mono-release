@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs'
-import { join } from 'path'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { cac } from 'cac'
 import type { ReleaseOptions } from './release'
 import { TAG, createLogger } from './log'
@@ -37,6 +37,7 @@ cli
   .option('--before-release <command>', 'Run command before release')
   .option('--disable-relationship', 'Disable relationship release')
   .option('--commit-message-placeholder', 'Commit message placeholder')
+  .option('--ci', 'Run in CI mode, will skip all select actions, you must specify `--specified-package`')
   .action(async (options: ReleaseOptions & CommonCLIOptions) => {
     const { release } = await import('./release')
     try {
@@ -53,6 +54,7 @@ cli
         beforeRelease: options.beforeRelease,
         disableRelationship: !!options.disableRelationship,
         commitMessagePlaceholder: options.commitMessagePlaceholder,
+        ci: options.ci,
       })
     }
     catch (e) {
