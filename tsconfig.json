@@ -3,10 +3,10 @@
     "target": "ESNext",
     "module": "CommonJS",
     "moduleResolution": "node",
+    "strict": true,
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "skipLibCheck": true
   },
   "include": [

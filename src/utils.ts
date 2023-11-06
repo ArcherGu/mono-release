@@ -45,7 +45,7 @@ export function getPackageInfo(pkgName: string, packagesPath: string) {
     name: string
     version: string
     private?: boolean
-    // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
+    // eslint-disable-next-line ts/no-require-imports,ts/no-var-requires
   } = require(pkgPath)
   const currentVersion = pkg.version
 

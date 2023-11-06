@@ -5,7 +5,7 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-describe('Rollback', () => {
+describe('rollback', () => {
   it('should rollback', async () => {
     const rollback = new Rollback()
 
