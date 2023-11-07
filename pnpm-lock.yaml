@@ -50,8 +50,8 @@ devDependencies:
     specifier: 20.8.10
     version: 20.8.10
   '@types/prompts':
-    specifier: 2.4.7
-    version: 2.4.7
+    specifier: 2.4.8
+    version: 2.4.8
   '@types/semver':
     specifier: 7.5.4
     version: 7.5.4
@@ -1023,8 +1023,8 @@ packages:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: true
 
-  /@types/prompts@2.4.7:
-    resolution: {integrity: sha512-5zTamE+QQM4nR6Ab3yHK+ovWuhLJXaa2ZLt3mT1en8U3ubWtjVT1vXDaVFC2+cL89uVn7Y+gIq5B3IcVvBl5xQ==}
+  /@types/prompts@2.4.8:
+    resolution: {integrity: sha512-fPOEzviubkEVCiLduO45h+zFHB0RZX8tFt3C783sO5cT7fUXf3EEECpD26djtYdh4Isa9Z9tasMQuZnYPtvYzw==}
     dependencies:
       '@types/node': 20.8.10
       kleur: 3.0.3

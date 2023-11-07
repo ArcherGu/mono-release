@@ -56,7 +56,7 @@
     "@lightwing/eslint-config": "1.0.3",
     "@types/fs-extra": "11.0.3",
     "@types/node": "20.8.10",
-    "@types/prompts": "2.4.7",
+    "@types/prompts": "2.4.8",
     "@types/semver": "7.5.4",
     "conventional-changelog-cli": "4.1.0",
     "eslint": "8.53.0",
