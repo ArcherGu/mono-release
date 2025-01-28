@@ -1,5 +1,5 @@
 import type { Logger } from './log'
-import { TAG, createLogger } from './log'
+import { createLogger, TAG } from './log'
 
 export type RollbackFn = () => (Promise<void> | void)
 

@@ -1,6 +1,6 @@
+import type { UserConfig } from '../../src/config'
 import path from 'node:path'
 import fs from 'fs-extra'
-import type { UserConfig } from '../../src/config'
 
 export interface MockPkg {
   name: string

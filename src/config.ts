@@ -1,11 +1,11 @@
-import path from 'node:path'
+import type { VERSION_TYPE } from './constants'
 import fs from 'node:fs'
-import JoyCon from 'joycon'
-import strip from 'strip-json-comments'
+import path from 'node:path'
 import { bundleRequire } from 'bundle-require'
 import { checkPackageExists } from 'check-package-exists'
-import { TAG, createLogger } from './log'
-import type { VERSION_TYPE } from './constants'
+import JoyCon from 'joycon'
+import strip from 'strip-json-comments'
+import { createLogger, TAG } from './log'
 
 export type PackageManager = 'npm' | 'yarn' | 'pnpm'
 

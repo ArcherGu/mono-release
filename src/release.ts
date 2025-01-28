@@ -1,8 +1,12 @@
-import path from 'node:path'
+import type { InlineConfig } from './config'
 import { execSync } from 'node:child_process'
+import path from 'node:path'
+import { green, yellow } from 'colorette'
 import prompts from 'prompts'
 import semver from 'semver'
-import { green, yellow } from 'colorette'
+import { resolveConfig } from './config'
+import { createLogger, TAG } from './log'
+import { Rollback } from './rollback'
 import {
   branchCheck,
   getPackageInfo,
@@ -13,10 +17,6 @@ import {
   logRecentCommits,
   updateVersion,
 } from './utils'
-import type { InlineConfig } from './config'
-import { resolveConfig } from './config'
-import { Rollback } from './rollback'
-import { TAG, createLogger } from './log'
 
 export interface ReleaseOptions {
   p?: string

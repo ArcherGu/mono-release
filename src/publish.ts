@@ -1,6 +1,6 @@
-import path from 'node:path'
-import { execSync } from 'node:child_process'
 import type { InlineConfig, PackageManager } from './config'
+import { execSync } from 'node:child_process'
+import path from 'node:path'
 import { resolveConfig } from './config'
 import { createLogger } from './log'
 import { branchCheck, getPackageInfo, getRunner } from './utils'

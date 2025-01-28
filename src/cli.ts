@@ -1,19 +1,19 @@
+import type { VersionType } from './config'
+import type { PublishOptions } from './publish'
+import type { ReleaseOptions } from './release'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cac } from 'cac'
-import type { ReleaseOptions } from './release'
-import { TAG, createLogger } from './log'
-import type { PublishOptions } from './publish'
-import type { VersionType } from './config'
+import { createLogger, TAG } from './log'
 
 interface CommonCLIOptions {
   '--'?: string[]
-  c?: string
-  config?: string
-  b?: string
-  branch?: string // branch1,branch2,branch3
-  skipBranchCheck?: boolean
-  dry?: boolean
+  'c'?: string
+  'config'?: string
+  'b'?: string
+  'branch'?: string // branch1,branch2,branch3
+  'skipBranchCheck'?: boolean
+  'dry'?: boolean
 }
 
 const cli = cac('mono-release')

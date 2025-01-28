@@ -1,15 +1,15 @@
+import type { Options as ExecaOptions } from '@esm2cjs/execa'
+import type { ReleaseType } from 'semver'
 /**
  * Modified from https://github.com/vuejs/core/blob/master/scripts/release.js
  */
 import { existsSync, readdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-import { blue, bold, gray, green, inverse } from 'colorette'
-import type { Options as ExecaOptions } from '@esm2cjs/execa'
 import { execa } from '@esm2cjs/execa'
-import type { ReleaseType } from 'semver'
-import semver from 'semver'
+import { blue, bold, gray, green, inverse } from 'colorette'
 import fs from 'fs-extra'
-import { TAG, createLogger } from './log'
+import semver from 'semver'
+import { createLogger, TAG } from './log'
 
 const logger = createLogger()
 
@@ -21,8 +21,9 @@ export async function getPackages(packagesPath: string, exclude: string[] = []) 
     if (
       fs.statSync(path.join(packagesPath, i)).isDirectory()
       && !exclude.includes(i)
-    )
+    ) {
       return true
+    }
 
     return false
   })
@@ -45,7 +46,7 @@ export function getPackageInfo(pkgName: string, packagesPath: string) {
     name: string
     version: string
     private?: boolean
-    // eslint-disable-next-line ts/no-require-imports,ts/no-var-requires
+    // eslint-disable-next-line ts/no-require-imports
   } = require(pkgPath)
   const currentVersion = pkg.version
 
@@ -167,9 +168,7 @@ export function updateVersion(pkgPath: string, version: string) {
 }
 
 export async function getLatestTag(pkgName: string) {
-  const tags = (await run('git', ['tag'], { stdio: 'pipe' })).stdout
-    .split(/\n/)
-    .filter(Boolean)
+  const tags = (await run('git', ['tag'], { stdio: 'pipe' })).stdout.split(/\n/).filter(Boolean)
   const prefix = `${pkgName}@`
   return tags
     .filter(tag => tag.startsWith(prefix))
