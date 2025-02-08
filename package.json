@@ -45,7 +45,7 @@
     "cac": "^6.7.14",
     "check-package-exists": "^1.1.6",
     "colorette": "^2.0.20",
-    "esbuild": "^0.24.2",
+    "esbuild": "^0.25.0",
     "fs-extra": "^11.3.0",
     "joycon": "^3.1.1",
     "prompts": "^2.4.2",
