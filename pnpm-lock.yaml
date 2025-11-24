@@ -18,8 +18,8 @@ importers:
         specifier: ^6.7.14
         version: 6.7.14
       check-package-exists:
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: ^1.2.2
+        version: 1.2.2
       colorette:
         specifier: ^2.0.20
         version: 2.0.20
@@ -1345,8 +1345,8 @@ packages:
   character-entities@2.0.2:
     resolution: {integrity: sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==}
 
-  check-package-exists@1.2.0:
-    resolution: {integrity: sha512-htpmzxRkc2WY0MoGTx+dncL56NPG0HrmvagkvlnS4VlKvKRxkHcDW7M7AhxNuSizKl6VRXZGUwZaHDrdT6jRaA==}
+  check-package-exists@1.2.2:
+    resolution: {integrity: sha512-DmoOz8PPtqOfoG4Ep9ujXF8Puj/GGZyNydGghb331dQamVqmuL0gS9CvKa0AQzqEukndAeD/5SIzH/PjqGx7GQ==}
     engines: {node: '>=14'}
 
   chokidar@4.0.3:
@@ -4264,7 +4264,7 @@ snapshots:
 
   character-entities@2.0.2: {}
 
-  check-package-exists@1.2.0:
+  check-package-exists@1.2.2:
     dependencies:
       '@esm2cjs/execa': 6.1.1-cjs.1
       global-dirs: 4.0.0

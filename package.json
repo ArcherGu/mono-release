@@ -43,7 +43,7 @@
     "@esm2cjs/execa": "6.1.1-cjs.1",
     "bundle-require": "^5.1.0",
     "cac": "^6.7.14",
-    "check-package-exists": "^1.2.0",
+    "check-package-exists": "^1.2.2",
     "colorette": "^2.0.20",
     "esbuild": "^0.27.0",
     "fs-extra": "^11.3.2",
