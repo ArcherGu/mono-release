@@ -29,7 +29,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postinstall": "npx simple-git-hooks"
   },
   "peerDependencies": {
     "conventional-changelog-cli": ">=3.0.0"
@@ -43,14 +44,14 @@
     "@esm2cjs/execa": "6.1.1-cjs.1",
     "bundle-require": "^5.1.0",
     "cac": "^6.7.14",
-    "check-package-exists": "^1.1.6",
+    "check-package-exists": "^1.2.0",
     "colorette": "^2.0.20",
     "esbuild": "^0.27.0",
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.2",
     "joycon": "^3.1.1",
     "prompts": "^2.4.2",
-    "semver": "^7.6.3",
-    "strip-json-comments": "^5.0.1"
+    "semver": "^7.7.3",
+    "strip-json-comments": "^5.0.3"
   },
   "devDependencies": {
     "@lightwing/eslint-config": "1.0.132",

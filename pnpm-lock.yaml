@@ -18,8 +18,8 @@ importers:
         specifier: ^6.7.14
         version: 6.7.14
       check-package-exists:
-        specifier: ^1.1.6
-        version: 1.1.6
+        specifier: ^1.2.0
+        version: 1.2.0
       colorette:
         specifier: ^2.0.20
         version: 2.0.20
@@ -27,7 +27,7 @@ importers:
         specifier: ^0.27.0
         version: 0.27.0
       fs-extra:
-        specifier: ^11.3.0
+        specifier: ^11.3.2
         version: 11.3.2
       joycon:
         specifier: ^3.1.1
@@ -36,10 +36,10 @@ importers:
         specifier: ^2.4.2
         version: 2.4.2
       semver:
-        specifier: ^7.6.3
+        specifier: ^7.7.3
         version: 7.7.3
       strip-json-comments:
-        specifier: ^5.0.1
+        specifier: ^5.0.3
         version: 5.0.3
     devDependencies:
       '@lightwing/eslint-config':
@@ -1345,8 +1345,8 @@ packages:
   character-entities@2.0.2:
     resolution: {integrity: sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==}
 
-  check-package-exists@1.1.6:
-    resolution: {integrity: sha512-81B3K0T5VEa8KvvvtvPgVs1VRwtjH2mY6qjqdc6gWKLcXkTTHdBoAXTx7ZD+44CVx0he/jZvdgEWN8OL7NEAkQ==}
+  check-package-exists@1.2.0:
+    resolution: {integrity: sha512-htpmzxRkc2WY0MoGTx+dncL56NPG0HrmvagkvlnS4VlKvKRxkHcDW7M7AhxNuSizKl6VRXZGUwZaHDrdT6jRaA==}
     engines: {node: '>=14'}
 
   chokidar@4.0.3:
@@ -2092,6 +2092,10 @@ packages:
     resolution: {integrity: sha512-urTSINYfAYgcbLb0yDQ6egFm6h3Mo1DcF9EkyXSRjjzdHbsulg01qhwWuXdOoUBuTkbQ80KDboXa0vFJ+BDH+g==}
     engines: {node: '>= 0.4'}
 
+  is-core-module@2.16.1:
+    resolution: {integrity: sha512-UfoeMA6fIJ8wTYFEUjelnaGI67v6+N7qXJEvQuIGa99l4xsCruSYOVSQ0uPANn4dAzm8lkYPaKLrrijLq7x23w==}
+    engines: {node: '>= 0.4'}
+
   is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
@@ -2636,8 +2640,8 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
 
-  resolve@1.22.10:
-    resolution: {integrity: sha512-NPRy+/ncIMeDlTAsuqwKIiferiawhefFJtkNSW0qZJEqMEb+qBt/77B/jGeeek+F0uOeN05CDa6HXbbIgtVX4w==}
+  resolve@1.22.11:
+    resolution: {integrity: sha512-RfqAvLnMl313r7c9oclB1HhUEAezcpLjz95wFH4LVuhk9JF/r22qmVP9AMmOU4vMX7Q8pN8jwNg/CSpdFnMjTQ==}
     engines: {node: '>= 0.4'}
     hasBin: true
 
@@ -4260,11 +4264,11 @@ snapshots:
 
   character-entities@2.0.2: {}
 
-  check-package-exists@1.1.6:
+  check-package-exists@1.2.0:
     dependencies:
       '@esm2cjs/execa': 6.1.1-cjs.1
       global-dirs: 4.0.0
-      resolve: 1.22.10
+      resolve: 1.22.11
 
   chokidar@4.0.3:
     dependencies:
@@ -5178,6 +5182,10 @@ snapshots:
     dependencies:
       hasown: 2.0.2
 
+  is-core-module@2.16.1:
+    dependencies:
+      hasown: 2.0.2
+
   is-extglob@2.1.1: {}
 
   is-fullwidth-code-point@3.0.0: {}
@@ -5864,9 +5872,9 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
-  resolve@1.22.10:
+  resolve@1.22.11:
     dependencies:
-      is-core-module: 2.16.0
+      is-core-module: 2.16.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
