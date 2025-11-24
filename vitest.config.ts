@@ -1,6 +1,6 @@
-import type { UserConfig } from 'vitest'
+import type { TestUserConfig } from 'vitest/node'
 
-const config: { test: UserConfig } = {
+const config: { test: TestUserConfig } = {
   test: {
     testTimeout: 50000,
   },
