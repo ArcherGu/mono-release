@@ -1,7 +1,7 @@
 {
   "name": "mono-release",
   "version": "0.0.0",
-  "packageManager": "pnpm@10.26.2",
+  "packageManager": "pnpm@10.27.0",
   "description": "A tiny monorepo release tool",
   "author": "ArcherGu",
   "license": "MIT",
@@ -45,8 +45,8 @@
     "cac": "^6.7.14",
     "check-package-exists": "^1.2.2",
     "colorette": "^2.0.20",
-    "esbuild": "^0.27.0",
-    "fs-extra": "^11.3.2",
+    "esbuild": "^0.27.2",
+    "fs-extra": "^11.3.3",
     "joycon": "^3.1.1",
     "prompts": "^2.4.2",
     "semver": "^7.7.3",
@@ -55,7 +55,7 @@
   "devDependencies": {
     "@lightwing/eslint-config": "1.0.139",
     "@types/fs-extra": "11.0.4",
-    "@types/node": "24.10.4",
+    "@types/node": "25.0.3",
     "@types/prompts": "2.4.9",
     "@types/semver": "7.7.1",
     "conventional-changelog-cli": "5.0.0",
