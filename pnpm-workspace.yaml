@@ -1,4 +1,4 @@
-onlyBuiltDependencies:
-  - check-package-exists
-  - esbuild
-  - simple-git-hooks
+allowBuilds:
+  check-package-exists: true
+  esbuild: true
+  simple-git-hooks: true
