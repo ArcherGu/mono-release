@@ -6,7 +6,7 @@
   "author": "ArcherGu",
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/ArcherGu/mono-release.git"
+    "url": "https://github.com/ArcherGu/mono-release"
   },
   "keywords": [
     "monorepo",
