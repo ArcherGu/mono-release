@@ -60,7 +60,7 @@
     "@types/semver": "7.7.1",
     "conventional-changelog-cli": "5.0.0",
     "eslint": "10.3.0",
-    "lint-staged": "17.0.3",
+    "lint-staged": "17.0.4",
     "simple-git-hooks": "2.13.1",
     "tsdown": "0.22.0",
     "typescript": "6.0.3",
