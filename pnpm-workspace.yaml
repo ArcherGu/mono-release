@@ -2,3 +2,5 @@ allowBuilds:
   check-package-exists: true
   esbuild: true
   simple-git-hooks: true
+minimumReleaseAgeExclude:
+  - lint-staged@17.0.6
