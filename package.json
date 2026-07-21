@@ -63,7 +63,7 @@
     "eslint": "10.4.1",
     "lint-staged": "17.0.6",
     "simple-git-hooks": "2.13.1",
-    "tsdown": "0.22.9",
+    "tsdown": "0.22.12",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "vitest": "4.1.10"
   },
