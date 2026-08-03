@@ -55,8 +55,8 @@ importers:
         specifier: 2.4.9
         version: 2.4.9
       '@types/semver':
-        specifier: 7.7.1
-        version: 7.7.1
+        specifier: 7.8.0
+        version: 7.8.0
       '@typescript/native':
         specifier: npm:typescript@7.0.2
         version: typescript@7.0.2
@@ -1222,8 +1222,8 @@ packages:
   '@types/prompts@2.4.9':
     resolution: {integrity: sha512-qTxFi6Buiu8+50/+3DGIWLHM6QuWsEKugJnnP6iv2Mc4ncxE4A/OJkjuVOA+5X0X1S/nq5VJRa8Lu+nwcvbrKA==}
 
-  '@types/semver@7.7.1':
-    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
+  '@types/semver@7.8.0':
+    resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -3608,7 +3608,7 @@ snapshots:
 
   '@conventional-changelog/git-client@1.0.0(conventional-commits-parser@6.0.0)':
     dependencies:
-      '@types/semver': 7.7.1
+      '@types/semver': 7.8.0
       semver: 7.8.5
     optionalDependencies:
       conventional-commits-parser: 6.0.0
@@ -4340,7 +4340,7 @@ snapshots:
       '@types/node': 25.9.5
       kleur: 3.0.3
 
-  '@types/semver@7.7.1': {}
+  '@types/semver@7.8.0': {}
 
   '@types/unist@3.0.3': {}
 
@@ -4898,7 +4898,7 @@ snapshots:
 
   conventional-changelog-writer@8.0.0:
     dependencies:
-      '@types/semver': 7.7.1
+      '@types/semver': 7.8.0
       conventional-commits-filter: 5.0.0
       handlebars: 4.7.7
       meow: 13.2.0
