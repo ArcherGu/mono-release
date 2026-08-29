@@ -62,7 +62,7 @@
     "conventional-changelog-cli": "5.0.0",
     "eslint": "10.4.1",
     "lint-staged": "17.0.6",
-    "simple-git-hooks": "2.13.1",
+    "simple-git-hooks": "2.14.0",
     "tsdown": "0.22.14",
     "typescript": "npm:@typescript/typescript6@6.0.2",
     "vitest": "4.1.11"
