@@ -40,21 +40,21 @@ export interface InlineConfig extends Omit<UserConfig, 'packagesPath'> {
   disablePush?: boolean
 }
 
-export type BeforeHook =
-  string |
-  ((pkgName: string, version: string) => Promise<void>) |
-  {
-    command: string
-    cwd?: string
-    /**
-     * If specified, only run this hook when release/public this package
-     */
-    package?: string
-    /**
-     * Skip this hook when running in dry mode
-     */
-    skipInDry?: boolean
-  }
+export type BeforeHook
+  = string
+    | ((pkgName: string, version: string) => Promise<void>)
+    | {
+      command: string
+      cwd?: string
+      /**
+       * If specified, only run this hook when release/public this package
+       */
+      package?: string
+      /**
+       * Skip this hook when running in dry mode
+       */
+      skipInDry?: boolean
+    }
 
 export interface UserConfig {
   /**
