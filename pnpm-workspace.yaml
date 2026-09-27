@@ -13,7 +13,7 @@ trustPolicyExclude:
   - tinyexec@1.2.2
 
 overrides:
-  '@humanfs/node@<0.16.8': ^0.16.8
+  '@humanfs/node@<0.16.8': ^0.17.0
   # 3.2.2 has no provenance; retain the attested release without weakening trustPolicy.
   vitest>why-is-node-running: 3.2.1
   '@conventional-changelog/git-client@<2.0.0': ^3.0.0
