@@ -1,7 +1,7 @@
 {
   "name": "mono-release",
   "version": "0.0.0",
-  "packageManager": "pnpm@12.16.1",
+  "packageManager": "pnpm@12.18.0",
   "description": "A tiny monorepo release tool",
   "author": "ArcherGu",
   "license": "MIT",
@@ -63,9 +63,9 @@
     "eslint": "10.14.0",
     "lint-staged": "17.6.0",
     "simple-git-hooks": "2.14.0",
-    "tsdown": "0.23.4",
+    "tsdown": "0.23.5",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "vitest": "5.0.5"
+    "vitest": "5.1.0"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
